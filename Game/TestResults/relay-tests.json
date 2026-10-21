@@ -1,0 +1,15 @@
+{
+  "passed": [
+    "health endpoint",
+    "invalid code rejected",
+    "missing room rejected",
+    "duplicate host rejected",
+    "two devices paired",
+    "third player rejected",
+    "200 duplex messages preserved and ordered",
+    "independent room isolation",
+    "disconnect cleanup and partner notice",
+    "oversized message closed"
+  ],
+  "failures": 0
+}

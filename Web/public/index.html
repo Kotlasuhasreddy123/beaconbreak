@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Beaconbreak — Two fighters. One last light.</title><link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#080e11;color:#edddbd;font-family:Georgia,serif;overflow:hidden}
+/* Keep the simulation's 16:9 arena inside the visible safe area. Dynamic
+   viewport height follows mobile browser bars without cropping touch buttons. */
+:root{--available-width:calc(100vw - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));--available-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+@supports(height:100dvh){:root{--available-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}html,body{height:100dvh}}
+body{display:flex;align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#game{width:min(var(--available-width),calc(var(--available-height) * 1.77777778));aspect-ratio:16/9;flex-shrink:0;position:relative}
+canvas{width:100%;height:100%;display:block;outline:none;touch-action:none}#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(ellipse,#253f41,#080e11)}
+h1{font-size:clamp(30px,5vw,65px);letter-spacing:.1em;margin:12px}p{font:15px system-ui;max-width:520px;text-align:center;line-height:1.6;padding:0 15px;color:#b6c9c9}
+progress{width:280px;height:5px;accent-color:#e3b76e}#fullscreen{position:fixed;right:10px;bottom:5px;background:#152226;border:1px solid #586968;color:#edddbd;padding:5px 12px;cursor:pointer;z-index:2}
+#rotate{display:none;position:fixed;bottom:45px;left:10%;width:80%;text-align:center;font:15px system-ui;background:#101e24;padding:18px;border:1px solid #cfa35d;pointer-events:none}
+#join-tools{position:fixed;left:8px;bottom:5px;z-index:3;font:14px system-ui}#join-tools button{background:#152226;border:1px solid #586968;color:#edddbd;padding:5px 12px;cursor:pointer}dialog{background:#13252a;color:#edddbd;border:1px solid #cfa35d;padding:24px;max-width:90vw}dialog input{font:24px system-ui;width:220px;text-transform:uppercase;padding:10px}dialog button{font:16px system-ui;padding:12px;margin:8px}dialog::backdrop{background:#0009}
+@media(orientation:portrait){#rotate{display:block}}
+#fullscreen{right:calc(10px + env(safe-area-inset-right,0px));bottom:calc(5px + env(safe-area-inset-bottom,0px))}
+#join-tools{left:calc(8px + env(safe-area-inset-left,0px));bottom:calc(5px + env(safe-area-inset-bottom,0px))}
+#rotate{bottom:calc(45px + env(safe-area-inset-bottom,0px));z-index:4}
+dialog input{max-width:100%}progress{max-width:80%}
+</style></head><body><main id="game"><canvas id="canvas" tabindex="0" aria-label="Beaconbreak two-player fighting game"></canvas><div id="loading"><p>TWO FIGHTERS. ONE LAST LIGHT.</p><h1>BEACONBREAK</h1><progress id="progress" value="0" max="1"></progress><p id="message">Loading the arena. Each player needs their own device.<br>Create a room, then share the code with your partner.</p></div></main>
+<button id="fullscreen">Full screen</button><div id="rotate">Turn your device sideways for the arena and touch controls.</div>
+<div id="join-tools"><button onclick="document.getElementById('join-dialog').showModal()">Join by code</button></div>
+<dialog id="join-dialog"><form method="dialog"><p>Enter your partner's room code</p><input id="room-input" aria-label="Room code" maxlength="8" autocomplete="off" autocapitalize="characters"><br><button id="join-room" value="join">Join room</button><button value="cancel">Cancel</button></form></dialog>
+<script>
+var canvas=document.getElementById('canvas');
+var config={dataUrl:'Build/public.data.gz',frameworkUrl:'Build/public.framework.js.gz',codeUrl:'Build/public.wasm.gz',streamingAssetsUrl:'StreamingAssets',companyName:'Beaconbreak Studio',productName:'Beaconbreak',productVersion:'2.0',devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5)};
+var loader=document.createElement('script');loader.src='Build/public.loader.js';
+loader.onload=function(){createUnityInstance(canvas,config,function(p){document.getElementById('progress').value=p}).then(function(instance){
+ window.unityInstance=instance;document.getElementById('loading').style.display='none';canvas.focus();
+ document.getElementById('fullscreen').onclick=function(){instance.SetFullscreen(1)};
+ document.getElementById('join-room').onclick=function(e){var room=document.getElementById('room-input').value.trim().toUpperCase();if(!/^[A-F0-9]{8}$/.test(room)){e.preventDefault();document.getElementById('room-input').setCustomValidity('Enter all eight letters and numbers.');document.getElementById('room-input').reportValidity();return;}document.getElementById('room-input').setCustomValidity('');instance.SendMessage('Co-op Fighter Game','ConfigureBrowser','guest|'+room);};
+ document.getElementById('room-input').oninput=function(){this.setCustomValidity('')};
+ var params=new URLSearchParams(location.search);var role=params.get('role'),room=params.get('room');
+ if((role==='host'||role==='guest')&&/^[A-F0-9]{8}$/i.test(room||''))instance.SendMessage('Co-op Fighter Game','ConfigureBrowser',role+'|'+room+'|'+(params.get('test')==='bot'?'bot':''));
+}).catch(function(error){document.getElementById('message').textContent='Could not start the game: '+error})};document.body.appendChild(loader);
+</script></body></html>

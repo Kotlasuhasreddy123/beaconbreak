@@ -1,0 +1,13 @@
+{
+  "passed": [
+    "Create room and join by visible HTML input; guest readiness",
+    "Keyboard movement changes player 1 position",
+    "Keyboard attack reaches simulation",
+    "Touch movement changes player 2 position",
+    "Touch attack reaches simulation",
+    "Remote touch command reaches authoritative host",
+    "Leave button returns partner to menu"
+  ],
+  "base": "https://guards-going-featuring-coordinate.trycloudflare.com",
+  "hardware": "Chromium desktop and touch emulation; not physical phones"
+}

@@ -1,0 +1,307 @@
+{
+  "base": "http://127.0.0.1:8787",
+  "scope": "Edge/Chromium screen-size and touch emulation, not physical hardware",
+  "cases": [
+    {
+      "width": 320,
+      "height": 568,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 194,
+        "width": 320,
+        "height": 180,
+        "viewportWidth": 320,
+        "viewportHeight": 568,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 360,
+      "height": 640,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 218.75,
+        "width": 360,
+        "height": 202.5,
+        "viewportWidth": 360,
+        "viewportHeight": 640,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 228.03125,
+        "width": 375,
+        "height": 210.9375,
+        "viewportWidth": 375,
+        "viewportHeight": 667,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 312.3125,
+        "width": 390,
+        "height": 219.375,
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 412,
+      "height": 915,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 341.625,
+        "width": 412,
+        "height": 231.75,
+        "viewportWidth": 412,
+        "viewportHeight": 915,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 345.0625,
+        "width": 430,
+        "height": 241.875,
+        "viewportWidth": 430,
+        "viewportHeight": 932,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 568,
+      "height": 320,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 0.25,
+        "width": 568,
+        "height": 319.5,
+        "viewportWidth": 568,
+        "viewportHeight": 320,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 640,
+      "height": 360,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 0,
+        "width": 640,
+        "height": 360,
+        "viewportWidth": 640,
+        "viewportHeight": 360,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "passed": true,
+      "measured": {
+        "x": 0.171875,
+        "y": 0,
+        "width": 666.65625,
+        "height": 374.984375,
+        "viewportWidth": 667,
+        "viewportHeight": 375,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "passed": true,
+      "measured": {
+        "x": 75.328125,
+        "y": 0,
+        "width": 693.328125,
+        "height": 389.984375,
+        "viewportWidth": 844,
+        "viewportHeight": 390,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 915,
+      "height": 412,
+      "passed": true,
+      "measured": {
+        "x": 91.28125,
+        "y": 0,
+        "width": 732.4375,
+        "height": 411.984375,
+        "viewportWidth": 915,
+        "viewportHeight": 412,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 932,
+      "height": 430,
+      "passed": true,
+      "measured": {
+        "x": 83.78125,
+        "y": 0,
+        "width": 764.4375,
+        "height": 429.984375,
+        "viewportWidth": 932,
+        "viewportHeight": 430,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 296,
+        "width": 768,
+        "height": 432,
+        "viewportWidth": 768,
+        "viewportHeight": 1024,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 96,
+        "width": 1024,
+        "height": 576,
+        "viewportWidth": 1024,
+        "viewportHeight": 768,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 820,
+      "height": 1180,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 359.375,
+        "width": 820,
+        "height": 461.25,
+        "viewportWidth": 820,
+        "viewportHeight": 1180,
+        "overflow": false,
+        "rotate": true
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 78.125,
+        "width": 1180,
+        "height": 663.75,
+        "viewportWidth": 1180,
+        "viewportHeight": 820,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720,
+        "viewportWidth": 1280,
+        "viewportHeight": 720,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "passed": true,
+      "measured": {
+        "x": 0.328125,
+        "y": 0,
+        "width": 1365.328125,
+        "height": 767.984375,
+        "viewportWidth": 1366,
+        "viewportHeight": 768,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "passed": true,
+      "measured": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080,
+        "viewportWidth": 1920,
+        "viewportHeight": 1080,
+        "overflow": false,
+        "rotate": false
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1080,
+      "passed": true,
+      "measured": {
+        "x": 320,
+        "y": 0,
+        "width": 1920,
+        "height": 1080,
+        "viewportWidth": 2560,
+        "viewportHeight": 1080,
+        "overflow": false,
+        "rotate": false
+      }
+    }
+  ],
+  "errors": []
+}
