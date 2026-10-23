@@ -1,5 +1,5 @@
 {
-    "build": "beaconbreak-2.0-rules-20261021",
+    "build": "duskbound-2.1-story-20261023",
     "runs": [
         {
             "scenario": "01 First-time duo",

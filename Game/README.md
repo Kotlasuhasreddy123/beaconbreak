@@ -1,4 +1,4 @@
-# Beaconbreak — web co-op edition
+# Duskbound — web co-op edition
 
 An original Unity 6000.6.5f1 martial-arts boss campaign for two players on separate devices. The primary release is now the WebGL game in `../Web/public`, served by `../Web/server.py`. Older Windows ZIPs in this workspace are historical builds and do not include this upgrade.
 
@@ -16,7 +16,8 @@ Controls: A/D move, W or Space jump, J low strike, K high/aerial strike, L direc
 - Original painted arena, articulated silhouette fighters, procedural combat animation, hit effects, synthesized impact/ally-warning audio, and an animated telemetry-transfer report.
 - Boss habit recording and bounded counter-adaptation. The host commits progression only after the terminal tick is confirmed; both players ready up for the next encounter.
 - Browser room codes over WebSockets, version handshake, encounter IDs, bounded prediction and rollback, authoritative snapshots, disconnect recovery to the menu, keyboard and multi-touch controls.
-- Local browser save for the room host. A new room resumes the last unlocked level; there is no mid-fight reconnect or cloud account save.
+- Local browser records for both players, saved after confirmed victories. A new hosted room resumes that player's last unlocked mission; there is no mid-fight reconnect or cloud account save.
+- Ten named chapter antagonists, a spoiler-gated chronicle, opening dialogue, chapter endings, a guide, and refined menu/upgrade/touch buttons.
 
 ## Verification
 

@@ -16,6 +16,7 @@ namespace CoopFighter.UnityGame.Editor
         public static void BuildWeb()
         {
             ProjectValidation.Run();
+            // Preserve company/product storage identity so existing browser saves survive.
             PlayerSettings.companyName = "Beaconbreak Studio";
             PlayerSettings.productName = "Beaconbreak";
             PlayerSettings.SplashScreen.show = false;

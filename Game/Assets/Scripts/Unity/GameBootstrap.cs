@@ -7,7 +7,7 @@ namespace CoopFighter.UnityGame
 {
     public sealed partial class GameBootstrap : MonoBehaviour
     {
-        private enum ScreenMode { Menu, Connecting, Fight, Report, Skills, Defeat, Credits }
+        private enum ScreenMode { Menu, Connecting, Fight, Report, Skills, Defeat, Credits, Chronicle, Guide, Profile }
         private enum PlayMode { Local, Host, Client }
         private ScreenMode screen = ScreenMode.Menu;
         private PlayMode playMode = PlayMode.Local;
@@ -55,6 +55,7 @@ namespace CoopFighter.UnityGame
             int saved = PlayerPrefs.GetInt("cf_highest_level", 1);
             nextLevel = Mathf.Clamp(saved, 1, 100);
             skillMask = PlayerPrefs.GetInt("cf_skill_mask", 0);
+            LoadPersonalRecord();
             string savedProfile = PlayerPrefs.GetString("cf_next_profile", "");
             if (!string.IsNullOrEmpty(savedProfile))
             {
@@ -135,6 +136,7 @@ namespace CoopFighter.UnityGame
         private void HandleResult()
         {
             resultHandled = true;
+            SavePersonalVictory(match);
             if (match.Result == MatchResult.Defeat)
             {
                 screen = ScreenMode.Defeat;
@@ -145,7 +147,7 @@ namespace CoopFighter.UnityGame
             }
             if (match.Level == 100)
             {
-                if (!automatedTest) { PlayerPrefs.SetInt("cf_highest_level", 100); PlayerPrefs.Save(); }
+                if (!automatedTest && !browserBot) { PlayerPrefs.SetInt("cf_highest_level", 100); PlayerPrefs.Save(); }
                 screen = ScreenMode.Credits;
                 LogTestResult("credits", match);
                 if (playMode == PlayMode.Host) Send(new NetworkEnvelope { kind = "credits", state = match.Copy() });
@@ -156,8 +158,7 @@ namespace CoopFighter.UnityGame
             nextLevel = match.Level + 1;
             // This local save is performed once when the fight first reaches
             // victory. An online host will be the sole progression authority.
-            if (!automatedTest) {
-                PlayerPrefs.SetInt("cf_highest_level", nextLevel);
+            if (!automatedTest && !browserBot) {
                 PlayerPrefs.SetString("cf_next_profile", JsonUtility.ToJson(nextProfile));
                 PlayerPrefs.Save();
             }
@@ -171,6 +172,7 @@ namespace CoopFighter.UnityGame
         private void StartHost()
         {
             CloseNetwork();
+            if (!automatedTest && !browserBot) { nextLevel=personalLevel; skillMask=PlayerPrefs.GetInt("cf_skill_mask",0); }
             webRoom = requestedRoom ?? Guid.NewGuid().ToString("N").Substring(0, 8).ToUpperInvariant();
             requestedRoom = null;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -186,6 +188,9 @@ namespace CoopFighter.UnityGame
 
         private void JoinHost()
         {
+            if (IsWeb && !System.Text.RegularExpressions.Regex.IsMatch(joinAddress.Trim(), "^[a-fA-F0-9]{8}$")) {
+                status="Enter the 8-character code from your partner's open room.";return;
+            }
             CloseNetwork();
             webRoom = joinAddress.Trim().ToUpperInvariant();
             playMode = PlayMode.Client;
@@ -221,6 +226,7 @@ namespace CoopFighter.UnityGame
                         continue;
                     }
                     peerVerified = true;
+                    if (playMode == PlayMode.Client) nextLevel = Mathf.Clamp(packet.level, 1, 100);
                     continue;
                 }
                 if (packet.kind == "reject") { status = packet.message; CloseNetwork(); screen = ScreenMode.Menu; break; }
@@ -246,6 +252,7 @@ namespace CoopFighter.UnityGame
                 {
                     if (packet.encounter != encounter) continue;
                     if (packet.state != null) match = packet.state;
+                    SavePersonalVictory(match);
                     nextLevel = packet.level;
                     nextProfile = packet.profile;
                     screen = ScreenMode.Report;
@@ -254,6 +261,7 @@ namespace CoopFighter.UnityGame
                 }
                 else if (playMode == PlayMode.Client && (packet.kind == "defeat" || packet.kind == "credits") && packet.encounter == encounter) {
                     if (packet.state != null) match = packet.state;
+                    SavePersonalVictory(match);
                     screen = packet.kind == "defeat" ? ScreenMode.Defeat : ScreenMode.Credits;
                     localReady = false; LogTestResult(packet.kind, match);
                 }
@@ -358,11 +366,14 @@ namespace CoopFighter.UnityGame
             else if (screen == ScreenMode.Connecting) DrawConnecting();
             else if (screen == ScreenMode.Fight) DrawFight();
             else if (screen == ScreenMode.Report) DrawReport();
-            else if (screen == ScreenMode.Skills) DrawSkills();
+            else if (screen == ScreenMode.Skills) DrawUpgrades();
+            else if (screen == ScreenMode.Chronicle) DrawChronicle();
+            else if (screen == ScreenMode.Guide) DrawGuide();
+            else if (screen == ScreenMode.Profile) DrawProfile();
             else if (screen == ScreenMode.Defeat) DrawDefeat();
             else DrawCredits();
-            if (screen == ScreenMode.Credits && GUI.Button(new Rect(90, 620, 300, 50), "RETURN TO MENU")) {
-                CloseNetwork(); screen = ScreenMode.Menu;
+            if (screen == ScreenMode.Credits && ActionButton(new Rect(90, 620, 300, 50), "Return to camp", true)) {
+                ReturnToHub();
             }
             GUI.matrix = previous;
         }

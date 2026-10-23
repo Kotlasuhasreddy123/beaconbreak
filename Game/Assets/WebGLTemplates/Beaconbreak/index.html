@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Beaconbreak — Two fighters. One last light.</title><link rel="icon" href="data:,">
+<title>Duskbound — A co-op martial-arts adventure</title><link rel="icon" href="data:,">
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#080e11;color:#edddbd;font-family:Georgia,serif;overflow:hidden}
 /* Keep the simulation's 16:9 arena inside the visible safe area. Dynamic
@@ -19,7 +19,11 @@ progress{width:280px;height:5px;accent-color:#e3b76e}#fullscreen{position:fixed;
 #join-tools{left:calc(8px + env(safe-area-inset-left,0px));bottom:calc(5px + env(safe-area-inset-bottom,0px))}
 #rotate{bottom:calc(45px + env(safe-area-inset-bottom,0px));z-index:4}
 dialog input{max-width:100%}progress{max-width:80%}
-</style></head><body><main id="game"><canvas id="canvas" tabindex="0" aria-label="Beaconbreak two-player fighting game"></canvas><div id="loading"><p>TWO FIGHTERS. ONE LAST LIGHT.</p><h1>BEACONBREAK</h1><progress id="progress" value="0" max="1"></progress><p id="message">Loading the arena. Each player needs their own device.<br>Create a room, then share the code with your partner.</p></div></main>
+#fullscreen,#join-tools button,dialog button{font:600 15px system-ui;border-radius:9px;border:1px solid #526d75;padding:10px 18px;background:linear-gradient(#243e48,#14252c);box-shadow:0 3px 12px #0005;min-height:42px}
+#fullscreen:hover,#join-tools button:hover,dialog button:hover{background:#34505a;border-color:#e3b76e}
+button:focus-visible,input:focus-visible{outline:3px solid #e3b76e;outline-offset:3px}
+dialog{border-radius:16px;box-shadow:0 20px 70px #000b}dialog input{border:1px solid #526d75;border-radius:8px;background:#0a181e;color:#fff;letter-spacing:.1em}
+</style></head><body><main id="game"><canvas id="canvas" tabindex="0" aria-label="Duskbound two-player fighting game"></canvas><div id="loading"><p>TWO OUTCASTS. ONE UNWRITTEN FUTURE.</p><h1>DUSKBOUND</h1><progress id="progress" value="0" max="1"></progress><p id="message">Preparing your journey. Each fighter needs their own device.<br>Create a room, then share its code with your partner.</p></div></main>
 <button id="fullscreen">Full screen</button><div id="rotate">Turn your device sideways for the arena and touch controls.</div>
 <div id="join-tools"><button onclick="document.getElementById('join-dialog').showModal()">Join by code</button></div>
 <dialog id="join-dialog"><form method="dialog"><p>Enter your partner's room code</p><input id="room-input" aria-label="Room code" maxlength="8" autocomplete="off" autocapitalize="characters"><br><button id="join-room" value="join">Join room</button><button value="cancel">Cancel</button></form></dialog>

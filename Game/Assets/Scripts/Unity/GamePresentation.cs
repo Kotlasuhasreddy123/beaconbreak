@@ -10,6 +10,7 @@ namespace CoopFighter.UnityGame
         private int effectTick = -1, effectEncounter, impactTarget, impactDamage;
         private bool impactFriendly, touchControls;
         private GUIStyle heroStyle, buttonStyle;
+        private Texture2D buttonNormal, buttonHover, buttonPressed;
         private readonly Color gold = new Color(0.94f, 0.76f, 0.44f);
         private readonly Color ink = new Color(0.025f, 0.033f, 0.038f);
         private readonly Rect[] touchRects = {
@@ -54,8 +55,24 @@ namespace CoopFighter.UnityGame
             }
             circle.Apply();
             heroStyle = new GUIStyle(titleStyle) { fontSize = 58 };
-            buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 18, fontStyle = FontStyle.Bold };
-            GUI.skin.button.fontSize = 15; GUI.skin.textField.fontSize = 24;
+            buttonNormal = ButtonTexture(0.78f); buttonHover = ButtonTexture(0.9f); buttonPressed = ButtonTexture(0.6f);
+            buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 20, fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter, border = new RectOffset(10,10,10,10), padding = new RectOffset(14,14,8,8), wordWrap=true };
+            buttonStyle.normal.background=buttonNormal;buttonStyle.hover.background=buttonHover;buttonStyle.active.background=buttonPressed;
+            buttonStyle.focused.background=buttonHover;
+            buttonStyle.normal.textColor=buttonStyle.hover.textColor=buttonStyle.active.textColor=buttonStyle.focused.textColor=Color.white;
+            GUI.skin.button.fontSize = 18; GUI.skin.textField.fontSize = 24;
+            GUI.skin.textField.padding=new RectOffset(15,15,8,8);
+        }
+        private Texture2D ButtonTexture(float brightness) {
+            var texture=new Texture2D(32,32,TextureFormat.RGBA32,false);
+            for(int y=0;y<32;y++)for(int x=0;x<32;x++){
+                float dx=Mathf.Max(0,8-Mathf.Min(x,31-x)),dy=Mathf.Max(0,8-Mathf.Min(y,31-y));
+                float alpha=Mathf.Clamp01(9-Mathf.Sqrt(dx*dx+dy*dy));
+                float shade=brightness+(y/31f)*0.09f;
+                if(x==1||x==30||y==1||y==30)shade+=0.12f;
+                texture.SetPixel(x,y,new Color(shade,shade,shade,alpha));
+            }texture.Apply();return texture;
         }
         private void DrawBackground()
         {
@@ -70,7 +87,8 @@ namespace CoopFighter.UnityGame
         }
         private bool ActionButton(Rect rect, string text, bool primary = false)
         {
-            Color old = GUI.backgroundColor; GUI.backgroundColor = primary ? gold : new Color(0.23f, 0.35f, 0.37f);
+            Color old = GUI.backgroundColor; GUI.backgroundColor = primary ? new Color(1f,0.78f,0.4f) : new Color(0.14f,0.24f,0.28f);
+            buttonStyle.normal.textColor=buttonStyle.hover.textColor=buttonStyle.active.textColor=buttonStyle.focused.textColor=primary?ink:Color.white;
             bool clicked = GUI.Button(rect, text, buttonStyle); GUI.backgroundColor = old; return clicked;
         }
         private void Panel(Rect rect) {
@@ -80,29 +98,35 @@ namespace CoopFighter.UnityGame
         {
             Panel(new Rect(55, 65, 675, 595));
             GUI.Label(new Rect(85, 90, 600, 35), "T W O   F I G H T E R S .   O N E   L A S T   L I G H T .", smallStyle);
-            GUI.Label(new Rect(80, 132, 650, 90), "BEACONBREAK", heroStyle);
-            GUI.Label(new Rect(85, 228, 590, 80), "Fight together. Learn their tells. Break the record.\n100 encounters against bosses that remember.", bodyStyle);
-            GUI.Label(new Rect(85, 325, 590, 35), "CAMPAIGN / LEVEL " + nextLevel.ToString("00") + "     •     2 DEVICES REQUIRED", smallStyle);
-            if (ActionButton(new Rect(85, 375, 280, 58), "CREATE ROOM", true)) StartHost();
-            if (ActionButton(new Rect(385, 375, 280, 58), "JOIN PARTNER")) JoinHost();
+            GUI.Label(new Rect(80, 132, 650, 90), CampaignStory.Title, heroStyle);
+            GUI.Label(new Rect(85, 228, 590, 80), "Defy the Beacon. Rewrite your fate.\nAn online martial-arts adventure for two.", bodyStyle);
+            GUI.Label(new Rect(85, 325, 590, 35), "CAMPAIGN / MISSION " + personalLevel.ToString("00") + "     •     2 DEVICES REQUIRED", smallStyle);
+            if (ActionButton(new Rect(85, 375, 280, 58), "Create room", true)) StartHost();
+            if (ActionButton(new Rect(385, 375, 280, 58), "Join room")) JoinHost();
             GUI.Label(new Rect(85, 452, 135, 40), IsWeb ? "ROOM CODE" : "HOST ADDRESS", smallStyle);
             joinAddress = GUI.TextField(new Rect(235, 450, 430, 42), joinAddress);
-            if (ActionButton(new Rect(85, 515, 280, 45), "TEAM SKILLS")) { returnFromSkills = screen; screen = ScreenMode.Skills; }
-            if (ActionButton(new Rect(385, 515, 280, 45), touchControls ? "TOUCH: ON" : "TOUCH: OFF")) touchControls = !touchControls;
+            if (ActionButton(new Rect(85, 515, 280, 45), "Upgrade skills")) { returnFromSkills = screen; screen = ScreenMode.Skills; }
+            if (ActionButton(new Rect(385, 515, 280, 45), "How to play")) screen=ScreenMode.Guide;
             GUI.Label(new Rect(85, 585, 590, 55), status.Length > 0 ? status : "Each player opens the game on their own device.\nCreate a room, then share its code with your partner.", smallStyle);
             DrawFighter(new FighterState { X = 14100, Facing = 1, Health = 100 }, 0);
             DrawFighter(new FighterState { X = 17400, Facing = -1, Health = 100, Guarding = true }, 1);
-            GUI.Label(new Rect(790, 625, 430, 40), "CO-OP MARTIAL ARTS CAMPAIGN", smallStyle);
+            GUI.Label(new Rect(790, 80, 430, 35), "WELCOME, "+fighterName.ToUpper(), bodyStyle);
+            if(ActionButton(new Rect(790,135,400,50),"Your fighter record"))screen=ScreenMode.Profile;
+            if(ActionButton(new Rect(790,200,400,50),"Story & villains")){chronicleChapter=(personalLevel-1)/10;screen=ScreenMode.Chronicle;}
+            if(ActionButton(new Rect(790,265,195,45),muted?"Sound: off":"Sound: on"))muted=!muted;
+            if(ActionButton(new Rect(995,265,195,45),touchControls?"Touch: on":"Touch: off"))touchControls=!touchControls;
+            GUI.Label(new Rect(790,625,430,40), "TWO OUTCASTS. ONE UNWRITTEN FUTURE.", smallStyle);
         }
         private void DrawConnecting()
         {
             Panel(new Rect(160, 125, 960, 480));
             GUI.Label(new Rect(200, 160, 880, 50), playMode == PlayMode.Host ? "YOUR PARTNER'S PLACE IS READY" : "JOINING THE FIGHT", titleStyle);
             GUI.Label(new Rect(200, 240, 880, 80), IsWeb ? "ROOM  " + webRoom : "HOST  " + localAddresses, heroStyle);
-            GUI.Label(new Rect(200, 345, 880, 85), peerVerified ? "Two devices connected. Get ready to enter the arena." : status, bodyStyle);
+            GUI.Label(new Rect(200, 340, 880, 35), peerVerified ? "Partner connected / Mission "+nextLevel+" / "+CampaignStory.Opponent(nextLevel) : status, bodyStyle);
+            GUI.Label(new Rect(200, 385, 880, 55), "“"+CampaignStory.ForLevel(nextLevel).Opening+"”", bodyStyle);
             if (playMode == PlayMode.Client && peerVerified && !localReady && ActionButton(new Rect(200, 445, 350, 55), "I'M READY", true)) ReadyGuest();
             if (playMode == PlayMode.Host || localReady) GUI.Label(new Rect(200, 455, 750, 40), "Waiting for your partner to press I'M READY…", bodyStyle);
-            if (ActionButton(new Rect(800, 525, 270, 45), "LEAVE ROOM")) { CloseNetwork(); screen = ScreenMode.Menu; }
+            if (ActionButton(new Rect(800, 525, 270, 45), "Leave room")) ReturnToHub();
         }
         private void DrawFight()
         {
@@ -111,7 +135,7 @@ namespace CoopFighter.UnityGame
             GUI.Label(new Rect(930, 20, 320, 30), "YOU ARE " + (playMode == PlayMode.Host ? "P1 • CYAN" : "P2 • AMBER"), smallStyle);
             DrawHealth(30, 65, "P1 / THE SCOUT", match.Fighters[0], new Color(0.22f, 0.85f, 0.92f));
             DrawHealth(30, 110, "P2 / THE KEEPER", match.Fighters[1], gold);
-            DrawHealth(800, 65, spec.Style.ToString().ToUpper() + " / WARDEN", match.Fighters[2], new Color(0.94f, 0.35f, 0.25f));
+            DrawHealth(800, 65, CampaignStory.Opponent(match.Level), match.Fighters[2], new Color(0.94f, 0.35f, 0.25f));
             GUI.Label(new Rect(800, 115, 430, 32), (180 - match.Tick / 60) + "s LEFT • " + spec.WeaponName.ToUpper(), smallStyle);
             for (int i = 0; i < 3; i++) DrawFighter(match.Fighters[i], i);
             if (match.Fighters[2].AttackTicks > 9) {
@@ -126,29 +150,31 @@ namespace CoopFighter.UnityGame
                 }
             }
             if (touchControls) {
-                string[] labels = { "<", ">", "JUMP", "LOW", "HIGH", "GUARD", "TANDEM" };
-                for (int i = 0; i < touchRects.Length; i++) { Box(touchRects[i], new Color(0.13f, 0.21f, 0.24f, 0.95f)); GUI.Label(new Rect(touchRects[i].x + 12, 627, touchRects[i].width, 40), labels[i], smallStyle); }
+                string[] labels = { "Left", "Right", "Jump", "Low\nstrike", "High\nstrike", "Guard", spec.TandemUnlocked?"Duo\nstrike":"Duo\nLv. 5" };
+                for (int i = 0; i < touchRects.Length; i++) ActionButton(touchRects[i],labels[i],i==6&&spec.TandemUnlocked&&match.TandemCooldown==0);
             } else {
                 GUI.Label(new Rect(30, 620, 1200, 32), "A / D MOVE    SPACE JUMP    J LOW    K HIGH    L GUARD    U TANDEM    T TOUCH    M MUTE    ESC LEAVE", smallStyle);
                 GUI.Label(new Rect(30, 662, 1220, 35), "TANDEM " + (!spec.TandemUnlocked ? "UNLOCKS AT LEVEL 5" : match.TandemCooldown == 0 ? "READY — PRESS U TOGETHER NEAR THE BOSS" : "RECHARGING") + " • ALLY HITS " + match.Telemetry.FriendlyHits, smallStyle);
             }
             if (rollback != null && rollback.WaitingForRemote) GUI.Label(new Rect(390, 230, 700, 50), "Waiting for partner's connection…", bodyStyle);
             if (match.Tick < 300) GUI.Label(new Rect(290, 195, 900, 80), "Guard the wind-up. Attack from opposite sides.\nYour weapons can hit your partner.", bodyStyle);
-            if (ActionButton(new Rect(1145, 180, 110, 34), "LEAVE")) { CloseNetwork(); screen = ScreenMode.Menu; }
+            if (ActionButton(new Rect(1145, 180, 110, 34), "Leave")) ReturnToHub();
         }
         private void DrawReport()
         {
             Panel(new Rect(130, 90, 1020, 550));
-            GUI.Label(new Rect(175, 120, 930, 55), "THE RECORD PASSES ON", titleStyle);
-            GUI.Label(new Rect(175, 200, 900, 75), "The defeated Warden sends your combat record ahead.\nThe next guardian is already preparing.", bodyStyle);
+            GUI.Label(new Rect(175, 120, 930, 55), match.Level%10==0?"CHAPTER COMPLETE":"VICTORY / THE SIGNAL TRAVELS", titleStyle);
+            ChapterStory defeated=CampaignStory.ForLevel(match.Level);
+            GUI.Label(new Rect(175, 195, 900, 110), match.Level%10==0?defeated.Villain+": “"+defeated.Defeat+"”":"A relay flashes behind the fallen guardian. "+defeated.Villain+" receives your combat record. The next enemy will know more about you.", bodyStyle);
             Line(new Vector2(235, 320), new Vector2(1030, 320), 3, gold);
             Disc(new Vector2(Mathf.Lerp(235, 1030, (Time.unscaledTime * 0.3f) % 1), 320), 10, gold);
             if (nextProfile != null) {
                 GUI.Label(new Rect(175, 365, 920, 80), "“" + nextProfile.StoryLine + "”", bodyStyle);
                 GUI.Label(new Rect(175, 450, 920, 40), "LOW GUARD " + nextProfile.LowBlockWeight + "% / ANTI-AIR " + nextProfile.AntiAirWeight + "% / PRESSURE " + nextProfile.PressureWeight + "%", smallStyle);
             }
-            DrawReady(new Rect(175, 545, 420, 55), "READY FOR LEVEL " + nextLevel);
-            if (playMode == PlayMode.Host && ActionButton(new Rect(650, 545, 420, 55), "TEAM SKILLS")) { returnFromSkills = screen; screen = ScreenMode.Skills; }
+            GUI.Label(new Rect(175,495,900,35),"Saved on this device / Mission "+personalLevel+" unlocked / "+SkillTree.PointsAvailable(personalLevel,skillMask)+" upgrade points",smallStyle);
+            DrawReady(new Rect(175, 545, 420, 55), "Continue / Mission " + nextLevel);
+            if (playMode == PlayMode.Host && ActionButton(new Rect(650, 545, 420, 55), "Upgrade skills")) { returnFromSkills = screen; screen = ScreenMode.Skills; }
         }
         private void DrawDefeat()
         {

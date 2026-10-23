@@ -1,10 +1,23 @@
-# Beaconbreak
+# Duskbound
 
-An original Unity/C# two-player online co-op fighting demo. Each player uses
+Formerly Beaconbreak. An original Unity/C# two-player online co-op fighting game build. Each player uses
 their own browser/device; both fight one adaptive boss. Includes friendly-fire
 coordination, a generated 100-encounter campaign, progression, and boss telemetry.
 
-This is a playable prototype, not a finished commercial game or a Nekki product.
+This is an independently developed playable submission build, not a finished
+commercial-scale game or a Nekki product. See SUBMISSION-STATUS.md for limitations.
+
+![Duskbound camp](docs/screenshots/camp.png)
+
+## The story
+
+Two former guardians desert a machine that learns from every fight and erases
+those it cannot predict. Across ten chapters, confront named wardens with their
+own reasons to protect the Beacon. Every victory sends your habits ahead;
+cooperation is the one pattern its architect struggles to understand.
+
+The in-game chronicle reveals motives and chapter conclusions as you progress.
+The story and interface are original; this is not a copy of Shadow Fight's IP.
 
 ## Play together
 
@@ -47,7 +60,9 @@ Automated touch emulation is not physical iPhone/Android certification.
 
 See Game/TestResults for measured outcomes. The host browser is authoritative;
 this is private cooperative play, not a cheat-resistant competitive backend.
-Progress is stored in the host browser, not a cloud account.
+Progress is stored independently in each player's browser after a confirmed
+victory, not a cloud account. Expedition upgrades are selected by the host and
+apply to both fighters. Personal records and names are local to the device.
 
 ## Rights
 

@@ -60,13 +60,13 @@ namespace CoopFighter.UnityGame
                 lastBrowserPublish = Time.realtimeSinceStartup; PublishBrowserStatus();
             }
             if (Input.GetKeyDown(KeyCode.Escape) && screen != ScreenMode.Menu) {
-                CloseNetwork(); screen = ScreenMode.Menu; status = "You left the room."; return;
+                ReturnToHub(); status = "Returned to camp. Your progress is saved on this device."; return;
             }
             if (network != null && network.Connected) {
                 float now = Time.realtimeSinceStartup;
                 if (!helloSent) {
                     helloSent = true; lastPacketTime = now;
-                    Send(new NetworkEnvelope { kind = "hello" });
+                    Send(new NetworkEnvelope { kind = "hello", level = nextLevel });
                 }
                 if (now - lastPingTime > 1f) { lastPingTime = now; Send(new NetworkEnvelope { kind = "ping" }); PublishBrowserStatus(); }
                 if (now - lastPacketTime > 12f) {

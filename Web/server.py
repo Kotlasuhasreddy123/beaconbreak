@@ -1,4 +1,4 @@
-"""Beaconbreak static WebGL host and bounded, two-person WebSocket room relay.
+"""Duskbound static WebGL host and bounded, two-person WebSocket room relay.
 
 Run: python server.py. No accounts, database, or paid backend are required.
 The host player's browser owns simulation; this relay only forwards messages.
@@ -34,7 +34,7 @@ async def room_socket(request):
         ROOMS[code] = room
         await ws.send_str("@Room open. Share " + code + " with your partner.")
     elif room is None or room["guest"] is not None:
-        await ws.send_str("!Room not found or already full. Check the code with your partner.")
+        await ws.send_str("!Room not found. Ask your partner to create a room and keep that screen open." if room is None else "!Room is full. Two players are already connected; ask your partner for a new room.")
         await ws.close()
         return ws
     else:

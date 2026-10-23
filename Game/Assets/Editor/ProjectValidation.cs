@@ -10,6 +10,12 @@ namespace CoopFighter.UnityGame.Editor
         [MenuItem("Co-op Fighter/Validate Project")]
         public static void Run()
         {
+            if(CampaignStory.Chapters.Length!=10)throw new InvalidOperationException("Campaign needs ten chapters.");
+            for(int level=1;level<=100;level++) {
+                ChapterStory story=CampaignStory.ForLevel(level);
+                if(string.IsNullOrEmpty(story.Villain)||string.IsNullOrEmpty(story.Defeat)||string.IsNullOrEmpty(story.Secret))
+                    throw new InvalidOperationException("Incomplete story at "+level);
+            }
             if (EditorBuildSettings.scenes.Length == 0 ||
                 EditorBuildSettings.scenes[0].path != "Assets/Scenes/Main.unity")
                 throw new InvalidOperationException("Main scene is not in Build Settings.");

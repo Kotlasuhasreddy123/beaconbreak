@@ -6,38 +6,44 @@
     "role": "Host",
     "room": "BEEFC012",
     "result": "Victory",
-    "tick": 480,
+    "tick": 519,
     "level": 6,
     "encounter": 3,
-    "hp1": 380,
-    "hp2": 387,
+    "hp1": 285,
+    "hp2": 312,
     "boss": 0,
-    "hash": 3695549723,
+    "hash": 330210441,
     "verified": true,
+    "p1X": 6685,
+    "p2X": 6405,
+    "p1Y": 0,
+    "p2Y": 0,
+    "p1Attacks": 16,
+    "p2Attacks": 16,
     "completed": [
       {
         "role": "host",
         "result": "report",
         "encounter": 1,
         "level": 5,
-        "tick": 581,
-        "hash": 1248770458
+        "tick": 656,
+        "hash": 2475086878
       },
       {
         "role": "host",
         "result": "report",
         "encounter": 2,
         "level": 5,
-        "tick": 585,
-        "hash": 2904057279
+        "tick": 876,
+        "hash": 4037645655
       },
       {
         "role": "host",
         "result": "report",
         "encounter": 3,
         "level": 6,
-        "tick": 480,
-        "hash": 3695549723
+        "tick": 519,
+        "hash": 330210441
       }
     ]
   },
@@ -46,40 +52,47 @@
     "role": "Client",
     "room": "BEEFC012",
     "result": "Victory",
-    "tick": 480,
+    "tick": 519,
     "level": 6,
     "encounter": 3,
-    "hp1": 380,
-    "hp2": 387,
+    "hp1": 285,
+    "hp2": 312,
     "boss": 0,
-    "hash": 3695549723,
+    "hash": 330210441,
     "verified": true,
+    "p1X": 6685,
+    "p2X": 6405,
+    "p1Y": 0,
+    "p2Y": 0,
+    "p1Attacks": 16,
+    "p2Attacks": 16,
     "completed": [
       {
         "role": "guest",
         "result": "report",
         "encounter": 1,
         "level": 5,
-        "tick": 581,
-        "hash": 1248770458
+        "tick": 656,
+        "hash": 2475086878
       },
       {
         "role": "guest",
         "result": "report",
         "encounter": 2,
         "level": 5,
-        "tick": 585,
-        "hash": 2904057279
+        "tick": 876,
+        "hash": 4037645655
       },
       {
         "role": "guest",
         "result": "report",
         "encounter": 3,
         "level": 6,
-        "tick": 480,
-        "hash": 3695549723
+        "tick": 519,
+        "hash": 330210441
       }
     ]
   },
-  "errors": []
+  "errors": [],
+  "base": "http://127.0.0.1:8787"
 }

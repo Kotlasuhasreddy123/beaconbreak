@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "Duskbound branded build loads",
+    "How-to-play and prologue accessible",
+    "Chronicle opens with spoiler-gated later chapters",
+    "Upgrade pagination remains bounded",
+    "Profile edit, save, and reload flow completes"
+  ],
+  "errors": [],
+  "base": "https://designing-clock-might-licenses.trycloudflare.com"
+}

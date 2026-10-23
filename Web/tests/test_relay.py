@@ -31,7 +31,7 @@ async def run():
         assert (await bad.receive()).data.startswith("!")
         passed.append("invalid code rejected")
         missing = await connect("ABCDEF12", "guest")
-        assert (await missing.receive()).data.startswith("!")
+        assert "Room not found" in (await missing.receive()).data
         passed.append("missing room rejected")
         host = await connect("ABCDEF12", "host")
         assert (await host.receive()).data.startswith("@Room")
@@ -43,7 +43,7 @@ async def run():
         assert (await guest.receive()).data == "@Connected"
         passed.append("two devices paired")
         third = await connect("ABCDEF12", "guest")
-        assert (await third.receive()).data.startswith("!")
+        assert "Room is full" in (await third.receive()).data
         passed.append("third player rejected")
         for sender, receiver in ((host, guest), (guest, host)):
             for tick in range(100):

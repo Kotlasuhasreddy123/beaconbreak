@@ -1,4 +1,4 @@
-# Beaconbreak web edition
+# Duskbound web edition (formerly Beaconbreak)
 
 Open the game on two separate devices. The first player creates a room and shares the eight-character code. The other player enters that code, joins, and presses **I'M READY**. Both players confirm readiness after victory or defeat. There is no shared-keyboard mode in the web interface.
 
@@ -8,7 +8,7 @@ Run `START-GAME.ps1`, or install `requirements.txt` in a Python environment and 
 
 Keyboard: A/D move, Space or W jump, J low attack, K high/aerial attack, L guard, U tandem. Face the enemy to guard. Attack from opposite sides to avoid ally hits. Tandem unlocks at level 5; both fighters press U within eight simulation ticks near the boss. T toggles touch controls, M mutes impacts, Escape leaves the room. Touch input supports multiple fingers. Use landscape orientation on phones.
 
-The room host stores campaign progress in that browser's local storage through Unity PlayerPrefs. Guest progress is not independently saved. Use the same device/browser to resume; private browsing or clearing site data removes the save. A disconnect ends the room; create a new room to resume the last unlocked level.
+Each player's browser stores its own highest reached mission after a host-confirmed victory through Unity PlayerPrefs. The host chooses shared expedition upgrades; guests retain their own upgrade choices for games they later host. These are local saves, not online accounts. Use the same device/browser to resume; private browsing or clearing site data removes the save. A disconnect ends the room; create a new room to resume the last unlocked mission. Playing with a more advanced host can unlock later missions on the guest's device.
 
 ## Free-tier public hosting
 
