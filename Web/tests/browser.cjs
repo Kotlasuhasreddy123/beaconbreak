@@ -25,6 +25,7 @@ fs.mkdirSync(output, {recursive:true});
     console.log('PASS: WebGL loaded and menu rendered');
     await host.evaluate(()=>window.unityInstance.SendMessage('Co-op Fighter Game','ConfigureBrowser','host|BEEFC012|bot'));
     await guest.goto(base+'/?role=guest&room=BEEFC012&test=bot');
+    await guest.getByRole('button',{name:'Accept invitation',exact:true}).click({timeout:180000});
     await guest.waitForFunction(()=>window.beaconbreakState?.screen==='Fight',{},{timeout:180000});
     await host.waitForFunction(()=>window.beaconbreakState?.tick>200,{},{timeout:60000});
     await host.screenshot({path:path.join(output,'fight-desktop.png')});

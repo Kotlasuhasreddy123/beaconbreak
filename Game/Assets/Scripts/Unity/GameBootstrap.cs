@@ -68,7 +68,7 @@ namespace CoopFighter.UnityGame
         {
             PollNetwork();
             UpdateSession();
-            if (screen == ScreenMode.Report && playMode != PlayMode.Client &&
+            if (screen == ScreenMode.Report && !CinemaActive && playMode != PlayMode.Client &&
                 Input.GetKeyDown(KeyCode.Return)) localReady = true;
             if (screen == ScreenMode.Defeat && playMode != PlayMode.Client &&
                 Input.GetKeyDown(KeyCode.R)) localReady = true;
@@ -149,6 +149,7 @@ namespace CoopFighter.UnityGame
             {
                 if (!automatedTest && !browserBot) { PlayerPrefs.SetInt("cf_highest_level", 100); PlayerPrefs.Save(); }
                 screen = ScreenMode.Credits;
+                BeginCinema();
                 LogTestResult("credits", match);
                 if (playMode == PlayMode.Host) Send(new NetworkEnvelope { kind = "credits", state = match.Copy() });
                 return;
@@ -163,6 +164,7 @@ namespace CoopFighter.UnityGame
                 PlayerPrefs.Save();
             }
             screen = ScreenMode.Report;
+            BeginCinema();
             localReady = peerReady = false;
             LogTestResult("report", match);
             if (playMode == PlayMode.Host)
@@ -233,7 +235,9 @@ namespace CoopFighter.UnityGame
                 if (!peerVerified) continue;
                 if (packet.kind == "ping") { Send(new NetworkEnvelope { kind = "pong" }); continue; }
                 if (packet.kind == "pong") continue;
-                if (packet.kind == "ready" && playMode == PlayMode.Host && packet.encounter == encounter) { peerReady = true; continue; }
+                if (packet.kind == "cinema_vote" && playMode == PlayMode.Host && packet.encounter == encounter && CinemaActive) { remoteCinemaVote=true;continue; }
+                if (packet.kind == "cinema_end" && playMode == PlayMode.Client && packet.encounter == encounter) { cinemaComplete=true;continue; }
+                if (packet.kind == "ready" && playMode == PlayMode.Host && packet.encounter == encounter && !CinemaActive) { peerReady = true; continue; }
                 if (playMode == PlayMode.Host && packet.encounter != encounter) continue;
                 if (playMode == PlayMode.Host && packet.kind == "input" && rollback != null)
                 {
@@ -256,6 +260,7 @@ namespace CoopFighter.UnityGame
                     nextLevel = packet.level;
                     nextProfile = packet.profile;
                     screen = ScreenMode.Report;
+                    BeginCinema();
                     localReady = false;
                     LogTestResult("report", match);
                 }
@@ -263,6 +268,7 @@ namespace CoopFighter.UnityGame
                     if (packet.state != null) match = packet.state;
                     SavePersonalVictory(match);
                     screen = packet.kind == "defeat" ? ScreenMode.Defeat : ScreenMode.Credits;
+                    if(packet.kind=="credits")BeginCinema();
                     localReady = false; LogTestResult(packet.kind, match);
                 }
             }
@@ -325,6 +331,7 @@ namespace CoopFighter.UnityGame
             clientInputs.Clear();
             helloSent = peerVerified = peerReady = localReady = false;
             encounter = 0; receivedStateTick = -1;
+            cinemaComplete=true;cinemaEncounter=-1;cinemaVote=remoteCinemaVote=false;
             match = null;
         }
 
@@ -362,7 +369,8 @@ namespace CoopFighter.UnityGame
                 new Vector3(Screen.width / 1280f, Screen.height / 720f, 1f));
             EnsureStyles();
             DrawBackground();
-            if (screen == ScreenMode.Menu) DrawMenu();
+            if (CinemaActive) DrawVictoryCinema();
+            else if (screen == ScreenMode.Menu) DrawMenu();
             else if (screen == ScreenMode.Connecting) DrawConnecting();
             else if (screen == ScreenMode.Fight) DrawFight();
             else if (screen == ScreenMode.Report) DrawReport();
@@ -372,7 +380,7 @@ namespace CoopFighter.UnityGame
             else if (screen == ScreenMode.Profile) DrawProfile();
             else if (screen == ScreenMode.Defeat) DrawDefeat();
             else DrawCredits();
-            if (screen == ScreenMode.Credits && ActionButton(new Rect(90, 620, 300, 50), "Return to camp", true)) {
+            if (screen == ScreenMode.Credits && !CinemaActive && ActionButton(new Rect(90, 620, 300, 50), "Return to camp", true)) {
                 ReturnToHub();
             }
             GUI.matrix = previous;

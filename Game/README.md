@@ -1,4 +1,4 @@
-# Duskbound — web co-op edition
+# SHADOW WARRIORS — web co-op edition
 
 An original Unity 6000.6.5f1 martial-arts boss campaign for two players on separate devices. The primary release is now the WebGL game in `../Web/public`, served by `../Web/server.py`. Older Windows ZIPs in this workspace are historical builds and do not include this upgrade.
 

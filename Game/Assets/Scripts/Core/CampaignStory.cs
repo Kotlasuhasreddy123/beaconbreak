@@ -12,7 +12,7 @@ namespace CoopFighter.Game
 
     public static class CampaignStory
     {
-        public const string Title = "DUSKBOUND";
+        public const string Title = "SHADOW WARRIORS";
         public const string Prologue = "You once guarded the Beacon: a machine that learned from every fighter it defeated. Then it began erasing anyone it could not predict. Now you and your partner carry the last unrecorded memory. Reach its heart together before it learns to separate you.";
         public static readonly ChapterStory[] Chapters = {
             new ChapterStory("Ash Gate", "Veyra", "The Gatekeeper",

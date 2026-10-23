@@ -56,6 +56,7 @@ namespace CoopFighter.UnityGame
         private void UpdateSession()
         {
             UpdateAudio();
+            UpdateCinema();
             if (Time.realtimeSinceStartup - lastBrowserPublish > 0.5f) {
                 lastBrowserPublish = Time.realtimeSinceStartup; PublishBrowserStatus();
             }
@@ -73,7 +74,7 @@ namespace CoopFighter.UnityGame
                     CloseNetwork(); screen = ScreenMode.Menu;
                     status = "Your partner disconnected. Host a new room to resume the saved level."; return;
                 }
-                bool between = screen == ScreenMode.Connecting || screen == ScreenMode.Report || screen == ScreenMode.Defeat;
+                bool between = !CinemaActive && (screen == ScreenMode.Connecting || screen == ScreenMode.Report || screen == ScreenMode.Defeat);
                 if ((automatedTest || browserBot) && between && peerVerified && testResults < 3) {
                     if (playMode == PlayMode.Client && !localReady) ReadyGuest();
                     if (playMode == PlayMode.Host) localReady = true;
@@ -102,7 +103,8 @@ namespace CoopFighter.UnityGame
 #endif
         }
         [Serializable] private class BrowserStatus {
-            public string screen, role, room, result; public int tick, level, encounter, hp1, hp2, boss;
+            public string screen, role, room, result, playerName; public int tick, level, encounter, hp1, hp2, boss;
+            public bool cinema, skipVoted; public int cinemaShot;
             public uint hash; public bool verified;
             public int p1X, p2X, p1Y, p2Y, p1Attacks, p2Attacks;
             public TestResult[] completed;
@@ -110,6 +112,7 @@ namespace CoopFighter.UnityGame
         private void PublishBrowserStatus() {
 #if UNITY_WEBGL && !UNITY_EDITOR
             BB_Status(JsonUtility.ToJson(new BrowserStatus { screen = screen.ToString(), role = playMode.ToString(), room = webRoom,
+                playerName=fighterName,cinema=CinemaActive,skipVoted=cinemaVote,cinemaShot=CinemaActive?(Time.unscaledTime-cinemaStarted<4?1:Time.unscaledTime-cinemaStarted<9?2:3):0,
                 encounter = encounter, verified = peerVerified, tick = match == null ? 0 : match.Tick,
                 level = match == null ? nextLevel : match.Level, result = match == null ? "" : match.Result.ToString(),
                 hash = match == null ? 0 : match.Hash(), hp1 = match == null ? 0 : match.Fighters[0].Health,
@@ -123,7 +126,7 @@ namespace CoopFighter.UnityGame
 
         private void ReadyGuest()
         {
-            if (!peerVerified) return;
+            if (!peerVerified || CinemaActive) return;
             localReady = true;
             Send(new NetworkEnvelope { kind = "ready" });
         }

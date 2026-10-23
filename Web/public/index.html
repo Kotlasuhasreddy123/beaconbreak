@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Duskbound — A co-op martial-arts adventure</title><link rel="icon" href="data:,">
+<title>SHADOW WARRIORS — Fight together</title><link rel="icon" href="data:,">
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#080e11;color:#edddbd;font-family:Georgia,serif;overflow:hidden}
 /* Keep the simulation's 16:9 arena inside the visible safe area. Dynamic
@@ -23,10 +23,16 @@ dialog input{max-width:100%}progress{max-width:80%}
 #fullscreen:hover,#join-tools button:hover,dialog button:hover{background:#34505a;border-color:#e3b76e}
 button:focus-visible,input:focus-visible{outline:3px solid #e3b76e;outline-offset:3px}
 dialog{border-radius:16px;box-shadow:0 20px 70px #000b}dialog input{border:1px solid #526d75;border-radius:8px;background:#0a181e;color:#fff;letter-spacing:.1em}
-</style></head><body><main id="game"><canvas id="canvas" tabindex="0" aria-label="Duskbound two-player fighting game"></canvas><div id="loading"><p>TWO OUTCASTS. ONE UNWRITTEN FUTURE.</p><h1>DUSKBOUND</h1><progress id="progress" value="0" max="1"></progress><p id="message">Preparing your journey. Each fighter needs their own device.<br>Create a room, then share its code with your partner.</p></div></main>
+[hidden]{display:none!important}#share-tools{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));z-index:5;max-width:90vw;padding:8px;border-radius:12px;background:#0b171dec;font:14px system-ui}
+#share-tools button{padding:10px 14px;min-height:42px;color:#fff;background:#203a44;border:1px solid #58737c;border-radius:8px;margin:2px;font:600 14px system-ui}#share-status{display:block;padding:4px;color:#efc47f}
+#invite-dialog{max-height:90dvh;overflow:auto}#share-url{width:100%;font:14px system-ui;letter-spacing:normal;text-transform:none}
+</style></head><body><main id="game"><canvas id="canvas" tabindex="0" aria-label="Shadow Warriors two-player fighting game"></canvas><div id="loading"><p>TWO OUTCASTS. ONE UNWRITTEN FUTURE.</p><h1>SHADOW WARRIORS</h1><progress id="progress" value="0" max="1"></progress><p id="message">Preparing your journey. Each fighter needs their own device.<br>Create a room, then invite a friend.</p></div></main>
 <button id="fullscreen">Full screen</button><div id="rotate">Turn your device sideways for the arena and touch controls.</div>
 <div id="join-tools"><button onclick="document.getElementById('join-dialog').showModal()">Join by code</button></div>
 <dialog id="join-dialog"><form method="dialog"><p>Enter your partner's room code</p><input id="room-input" aria-label="Room code" maxlength="8" autocomplete="off" autocapitalize="characters"><br><button id="join-room" value="join">Join room</button><button value="cancel">Cancel</button></form></dialog>
+<div id="share-tools" hidden><button id="copy-invite">Copy invite link</button><button id="share-invite">Share invitation</button><span id="share-status" role="status">Invite one friend. Keep this room open.</span></div>
+<dialog id="invite-dialog"><h2>Play together?</h2><p id="invite-message"></p><p>This is an invitation, not an automatic match. Accept to enter the room, then press I'M READY to start. Your partner must keep their room open.</p><form method="dialog"><button id="accept-invite">Accept invitation</button><button id="decline-invite">Decline</button></form></dialog>
+<dialog id="share-dialog"><p>Send this link privately to your friend.</p><input id="share-url" aria-label="Invitation link" readonly><form method="dialog"><button>Close</button></form></dialog>
 <script>
 var canvas=document.getElementById('canvas');
 var config={dataUrl:'Build/public.data.gz',frameworkUrl:'Build/public.framework.js.gz',codeUrl:'Build/public.wasm.gz',streamingAssetsUrl:'StreamingAssets',companyName:'Beaconbreak Studio',productName:'Beaconbreak',productVersion:'2.0',devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5)};
@@ -36,7 +42,17 @@ loader.onload=function(){createUnityInstance(canvas,config,function(p){document.
  document.getElementById('fullscreen').onclick=function(){instance.SetFullscreen(1)};
  document.getElementById('join-room').onclick=function(e){var room=document.getElementById('room-input').value.trim().toUpperCase();if(!/^[A-F0-9]{8}$/.test(room)){e.preventDefault();document.getElementById('room-input').setCustomValidity('Enter all eight letters and numbers.');document.getElementById('room-input').reportValidity();return;}document.getElementById('room-input').setCustomValidity('');instance.SendMessage('Co-op Fighter Game','ConfigureBrowser','guest|'+room);};
  document.getElementById('room-input').oninput=function(){this.setCustomValidity('')};
+ function inviteLink(){var s=window.beaconbreakState;if(!s||s.role!=='Host'||s.screen!=='Connecting')return null;var u=new URL(location.origin+location.pathname);u.searchParams.set('role','guest');u.searchParams.set('room',s.room);u.searchParams.set('from',(s.playerName||'Your friend').slice(0,20));return u.href;}
+ function showLink(link){document.getElementById('share-url').value=link;document.getElementById('share-dialog').showModal();document.getElementById('share-url').select();}
+ document.getElementById('copy-invite').onclick=async function(){var link=inviteLink();if(!link)return;try{await navigator.clipboard.writeText(link);document.getElementById('share-status').textContent='Copied. Send it to your friend.';}catch(e){showLink(link);}};
+ document.getElementById('share-invite').onclick=async function(){var link=inviteLink();if(!link)return;if(navigator.share){try{await navigator.share({title:'SHADOW WARRIORS',text:'Join me for a two-player adventure.',url:link});}catch(e){if(e.name!=='AbortError')showLink(link);}}else showLink(link);};
+ setInterval(function(){var s=window.beaconbreakState;var immersive=!!(s&&(s.cinema||s.screen==='Fight'));document.getElementById('join-tools').hidden=immersive;document.getElementById('fullscreen').hidden=immersive;document.getElementById('share-tools').hidden=!(s&&s.role==='Host'&&s.screen==='Connecting'&&/^[A-F0-9]{8}$/.test(s.room));},500);
  var params=new URLSearchParams(location.search);var role=params.get('role'),room=params.get('room');
- if((role==='host'||role==='guest')&&/^[A-F0-9]{8}$/i.test(room||''))instance.SendMessage('Co-op Fighter Game','ConfigureBrowser',role+'|'+room+'|'+(params.get('test')==='bot'?'bot':''));
+ if(role==='guest'&&/^[A-F0-9]{8}$/i.test(room||'')){
+  document.getElementById('invite-message').textContent=(params.get('from')||'A fellow warrior').slice(0,20)+' invited you to room '+room.toUpperCase()+'.';
+  document.getElementById('accept-invite').onclick=function(){instance.SendMessage('Co-op Fighter Game','ConfigureBrowser','guest|'+room+'|'+(params.get('test')==='bot'?'bot':''));history.replaceState(null,'',location.pathname);};
+  document.getElementById('decline-invite').onclick=function(){history.replaceState(null,'',location.pathname);};
+  document.getElementById('invite-dialog').showModal();
+ }
 }).catch(function(error){document.getElementById('message').textContent='Could not start the game: '+error})};document.body.appendChild(loader);
 </script></body></html>

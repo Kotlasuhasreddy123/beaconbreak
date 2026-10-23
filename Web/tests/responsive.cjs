@@ -36,7 +36,7 @@ const report={base,scope:'Edge/Chromium screen-size and touch emulation, not phy
    assert(!measured.overflow,'No horizontal page overflow');
    assert.equal(measured.rotate,height>width,'Portrait orientation hint');
    await page.getByRole('button',{name:'Join by code',exact:true}).click();
-   const dialog=await page.locator('dialog').boundingBox();
+   const dialog=await page.locator('#join-dialog').boundingBox();
    assert(dialog.x>=0&&dialog.x+dialog.width<=width+1,'Join dialog fits');
    await page.getByRole('button',{name:'Cancel',exact:true}).click();
    report.cases.push({width,height,passed:true,measured});

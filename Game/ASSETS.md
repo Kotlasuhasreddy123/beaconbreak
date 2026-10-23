@@ -9,3 +9,9 @@ Arena generation prompt:
 > Use case: stylized-concept. Asset type: original 2D martial arts fighting game arena backdrop, landscape 16:9, no characters, no UI, no text. A dramatic hand-painted ruined mountain monastery and ancient bronze signal beacon at dusk, enormous pale amber moon in hazy teal sky, layered distant mountains and temple roofs, sparse falling embers, warm lanterns at far edges, dark ink and gold painterly art direction. Side-on fighting game camera. Flat horizontal stone fighting platform extends completely across the bottom at 82 percent image height, broad clear open center for three silhouette combatants. Background center is luminous misty gold, detailed architecture concentrated on edges, cinematic contrast, professional indie game environment, original architecture, no franchise logos, no existing characters, no watermark.
 
 Disclose AI-assisted asset and code creation if the competition requires it. The original game's genre and atmosphere are inspirations; this project uses its own title, fiction, mechanics implementation, and visual assets.
+
+- Victory cinematics: original code-driven silhouette actors, panning skylines,
+  particles and captions in VictoryCinema.cs. A user-provided reference video
+  informed the broad cinematic approach; no reference frames, audio, characters,
+  or footage are included in the game or repository. Reusable shots vary by
+  mission, next opponent, learned telemetry and campaign ending.

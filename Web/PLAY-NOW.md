@@ -1,4 +1,4 @@
-# Play Duskbound
+# Play SHADOW WARRIORS
 
 The current temporary testing link is:
 
@@ -7,8 +7,8 @@ https://designing-clock-might-licenses.trycloudflare.com/
 Local address on this computer: http://localhost:8787
 
 1. Open the same link on two separate devices.
-2. Player 1 selects **CREATE ROOM** and shares the eight-character room code.
-3. Player 2 enters the code and selects **Join room**, or uses **Join by code** at the bottom of the page.
+2. Player 1 selects **Create room**, then **Copy invite link** or **Share invitation**. Send it privately to your friend.
+3. Player 2 opens the link and chooses **Accept invitation**. Entering the room code through **Join by code** remains a fallback.
 4. Player 2 selects **I'M READY**. After a fight, both players confirm readiness.
 5. Use landscape orientation on phones. On a keyboard: A/D move, Space jump, J low, K high, L guard, U tandem. T toggles the touch controls.
 

@@ -10,9 +10,9 @@ const out=path.resolve(__dirname,'../../output/playwright');
  async function screen(name){await page.waitForFunction(n=>window.beaconbreakState?.screen===n,name,{timeout:180000});}
  try{
   await page.goto(base);await screen('Menu');
-  assert((await page.title()).includes('Duskbound'));
+  assert((await page.title()).includes('SHADOW WARRIORS'));
   await page.screenshot({path:path.join(out,'duskbound-camp.png')});
-  passed.push('Duskbound branded build loads');
+  passed.push('Shadow Warriors branded build loads');
   await page.mouse.click(515,537);await screen('Guide');
   await page.screenshot({path:path.join(out,'duskbound-guide.png')});
   passed.push('How-to-play and prologue accessible');

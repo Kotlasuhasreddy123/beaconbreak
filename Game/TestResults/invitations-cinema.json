@@ -1,0 +1,13 @@
+{
+  "passed": [
+    "Host copies an invitation containing its active room",
+    "Declining does not connect or start a fight",
+    "Accepted invite connects two separate browser contexts",
+    "First victory plays all three animated shots automatically",
+    "One skip vote cannot dismiss the partner story",
+    "Two skip votes release the transition and next encounter",
+    "Later victory also plays; three final match hashes agree"
+  ],
+  "errors": [],
+  "base": "https://designing-clock-might-licenses.trycloudflare.com"
+}

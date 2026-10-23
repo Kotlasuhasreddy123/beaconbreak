@@ -54,7 +54,7 @@ namespace CoopFighter.UnityGame
                 circle.SetPixel(x, y, new Color(1, 1, 1, Mathf.Clamp01(32 - d)));
             }
             circle.Apply();
-            heroStyle = new GUIStyle(titleStyle) { fontSize = 58 };
+            heroStyle = new GUIStyle(titleStyle) { fontSize = 48 };
             buttonNormal = ButtonTexture(0.78f); buttonHover = ButtonTexture(0.9f); buttonPressed = ButtonTexture(0.6f);
             buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 20, fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleCenter, border = new RectOffset(10,10,10,10), padding = new RectOffset(14,14,8,8), wordWrap=true };

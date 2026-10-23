@@ -1,4 +1,4 @@
-# Duskbound web edition (formerly Beaconbreak)
+# SHADOW WARRIORS web edition (formerly Duskbound / Beaconbreak)
 
 Open the game on two separate devices. The first player creates a room and shares the eight-character code. The other player enters that code, joins, and presses **I'M READY**. Both players confirm readiness after victory or defeat. There is no shared-keyboard mode in the web interface.
 

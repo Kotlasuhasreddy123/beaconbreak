@@ -1,5 +1,5 @@
 {
-    "build": "duskbound-2.1-story-20261023",
+    "build": "shadow-warriors-2.2-cinema-20261023",
     "runs": [
         {
             "scenario": "All-level coordinated-player sweep",

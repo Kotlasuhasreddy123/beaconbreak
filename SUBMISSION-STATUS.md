@@ -1,6 +1,6 @@
-# Duskbound — submission handoff
+# SHADOW WARRIORS — submission handoff
 
-Working title: Duskbound. The GitHub repository and internal storage keys retain
+User-selected title: SHADOW WARRIORS. The GitHub repository and internal storage keys retain
 the previous Beaconbreak name to preserve links and existing browser saves.
 No trademark clearance is claimed for the working title.
 
@@ -22,6 +22,10 @@ The hundredth victory concludes the story. Leave returns to camp.
 - Ten named chapter antagonists, motivations, opening dialogue, chapter endings,
   a spoiler-gated chronicle and boss-to-boss adaptive combat reports.
 - Personal fighter name and mission unlocks saved on each participating device.
+- Original victory cinematics with three animated shots, incoming-opponent
+  reveal, per-mission variations and two-person skip voting; a final-boss ending.
+- Copyable/shareable invitations with an explicit accept/decline prompt. These
+  are private room links, not identity-verified social accounts.
 - Refined buttons, paged upgrade cards, explicit room-code validation, distinct
   missing/full-room messages and a how-to-play screen.
 
@@ -35,8 +39,9 @@ with a more advanced host. This cooperative build trusts the host; it is not
 an anti-cheat service. It has no reconnect-in-place or public matchmaking.
 
 The 100 missions reuse an encounter generator and arena; they are not 100
-hand-authored environments. Story scenes are text/illustration presentations,
-not animated cinematics. The fighters are procedural silhouettes. This is not
+hand-authored environments. Story scenes use reusable original procedural
+silhouette animation, parallax and captions, not 100 individually produced
+films or copied Nekki footage. The fighters are procedural silhouettes. This is not
 an equivalent to a large studio's multi-year commercial production.
 
 Hosting configuration is included. A temporary tunnel requires the PC to stay
