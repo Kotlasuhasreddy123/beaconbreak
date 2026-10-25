@@ -69,7 +69,7 @@ namespace CoopFighter.Game
         public static ChapterStory ForLevel(int level) { return Chapters[(Math.Max(1, Math.Min(100, level))-1)/10]; }
         public static string Opponent(int level) {
             ChapterStory chapter = ForLevel(level);
-            return level % 10 == 0 ? chapter.Villain + " / " + chapter.Title : chapter.Villain + "'s " + LevelSpec.Create(level).Style;
+            return level % 10 == 0 ? chapter.Villain + " / " + chapter.Title : MissionCinema.EnemyName(level);
         }
     }
 }

@@ -81,6 +81,7 @@ namespace CoopFighter.UnityGame
             else Box(new Rect(0, 0, 1280, 720), ink);
             if (screen != ScreenMode.Fight) Box(new Rect(0, 0, 1280, 720), new Color(0.015f, 0.025f, 0.03f, 0.55f));
             else {
+                if(match!=null)DrawChapterScenery((match.Level-1)/10,match.Tick/60f,570);
                 Box(new Rect(0, 0, 1280, 178), new Color(0.015f, 0.025f, 0.03f, 0.85f));
                 Box(new Rect(0, 598, 1280, 122), new Color(0.015f, 0.025f, 0.03f, 0.86f));
             }
@@ -131,7 +132,7 @@ namespace CoopFighter.UnityGame
         private void DrawFight()
         {
             LevelSpec spec = LevelSpec.Create(match.Level);
-            GUI.Label(new Rect(30, 12, 850, 45), spec.ActName.ToUpper() + " / " + match.Level.ToString("00"), titleStyle);
+            GUI.Label(new Rect(30, 12, 850, 45), spec.ActName.ToUpper() + " / MISSION " + match.Level.ToString("000")+" OF 100", titleStyle);
             GUI.Label(new Rect(930, 20, 320, 30), "YOU ARE " + (playMode == PlayMode.Host ? "P1 • CYAN" : "P2 • AMBER"), smallStyle);
             DrawHealth(30, 65, "P1 / THE SCOUT", match.Fighters[0], new Color(0.22f, 0.85f, 0.92f));
             DrawHealth(30, 110, "P2 / THE KEEPER", match.Fighters[1], gold);
@@ -157,13 +158,13 @@ namespace CoopFighter.UnityGame
                 GUI.Label(new Rect(30, 662, 1220, 35), "TANDEM " + (!spec.TandemUnlocked ? "UNLOCKS AT LEVEL 5" : match.TandemCooldown == 0 ? "READY — PRESS U TOGETHER NEAR THE BOSS" : "RECHARGING") + " • ALLY HITS " + match.Telemetry.FriendlyHits, smallStyle);
             }
             if (rollback != null && rollback.WaitingForRemote) GUI.Label(new Rect(390, 230, 700, 50), "Waiting for partner's connection…", bodyStyle);
-            if (match.Tick < 300) GUI.Label(new Rect(290, 195, 900, 80), "Guard the wind-up. Attack from opposite sides.\nYour weapons can hit your partner.", bodyStyle);
+            if (match.Tick < 300) GUI.Label(new Rect(260, 195, 850, 80), MissionCinema.ForLevel(match.Level).Title+"\nGuard the wind-up. Flank together. Avoid ally hits.", bodyStyle);
             if (ActionButton(new Rect(1145, 180, 110, 34), "Leave")) ReturnToHub();
         }
         private void DrawReport()
         {
             Panel(new Rect(130, 90, 1020, 550));
-            GUI.Label(new Rect(175, 120, 930, 55), match.Level%10==0?"CHAPTER COMPLETE":"VICTORY / THE SIGNAL TRAVELS", titleStyle);
+            GUI.Label(new Rect(175, 120, 930, 55), "MISSION "+match.Level.ToString("000")+" COMPLETE / NEXT "+nextLevel.ToString("000"), titleStyle);
             ChapterStory defeated=CampaignStory.ForLevel(match.Level);
             GUI.Label(new Rect(175, 195, 900, 110), match.Level%10==0?defeated.Villain+": “"+defeated.Defeat+"”":"A relay flashes behind the fallen guardian. "+defeated.Villain+" receives your combat record. The next enemy will know more about you.", bodyStyle);
             Line(new Vector2(235, 320), new Vector2(1030, 320), 3, gold);

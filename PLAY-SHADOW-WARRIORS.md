@@ -1,6 +1,6 @@
 # Play SHADOW WARRIORS
 
-Current test link: https://designing-clock-might-licenses.trycloudflare.com/
+Public game: https://shadow-warriors.onrender.com/
 Local: http://localhost:8787
 
 1. Both players refresh any old game tabs to load the same version.
@@ -14,6 +14,11 @@ Local: http://localhost:8787
 If sharing is unsupported, a selectable URL is shown. Room codes remain a
 fallback. A phone should be held sideways for touch controls.
 
-Keep the host PC, web server and tunnel awake/running. This is a temporary
-address, not permanent hosting. New tunnel addresses have separate browser
-saves. Accounts and friend lists are not included in this submission version.
+Deployed October 25, 2026 on Render Free. No local server or tunnel is needed.
+The two players must keep their game tabs open during a match. The service may
+take about a minute to wake after inactivity; leave the loading page open.
+The deployment account has no card on file; do not add paid compute or add-ons.
+Free quotas are shared with other services in the same Render workspace.
+Saves remain specific to each browser/device and website address; old temporary
+link saves do not automatically transfer. Accounts and friend lists are not
+included in this submission version.

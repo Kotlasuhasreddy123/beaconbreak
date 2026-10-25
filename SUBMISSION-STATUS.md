@@ -22,8 +22,9 @@ The hundredth victory concludes the story. Leave returns to camp.
 - Ten named chapter antagonists, motivations, opening dialogue, chapter endings,
   a spoiler-gated chronicle and boss-to-boss adaptive combat reports.
 - Personal fighter name and mission unlocks saved on each participating device.
-- Original victory cinematics with three animated shots, incoming-opponent
-  reveal, per-mission variations and two-person skip voting; a final-boss ending.
+- Mission-specific victory recipes composed from ten original action families
+  and ten chapter environments, followed by the actual incoming opponent and
+  its combat stats. Includes two-person skip voting and a final-boss ending.
 - Copyable/shareable invitations with an explicit accept/decline prompt. These
   are private room links, not identity-verified social accounts.
 - Refined buttons, paged upgrade cards, explicit room-code validation, distinct
@@ -38,15 +39,18 @@ deployment URL for continued play. A guest can unlock the mission reached
 with a more advanced host. This cooperative build trusts the host; it is not
 an anti-cheat service. It has no reconnect-in-place or public matchmaking.
 
-The 100 missions reuse an encounter generator and arena; they are not 100
-hand-authored environments. Story scenes use reusable original procedural
-silhouette animation, parallax and captions, not 100 individually produced
-films or copied Nekki footage. The fighters are procedural silhouettes. This is not
+The 100 missions reuse an encounter generator, with ten procedural chapter
+backdrops; they are not 100 hand-authored environments. Story scenes combine
+reusable joint-based movement, chapter scenery and mission text; they are not
+100 individually produced films or copied Nekki footage. Parkour is cinematic,
+not a playable traversal mode. The fighters are procedural silhouettes. This is not
 an equivalent to a large studio's multi-year commercial production.
 
-Hosting configuration is included. A temporary tunnel requires the PC to stay
-awake; a permanent independent host still needs deployment through the owner's
-hosting account. Do not submit an expired tunnel URL. GitHub Pages alone cannot
+Deployed October 25, 2026 at https://shadow-warriors.onrender.com on Render Free,
+from commit 7b951d5e0359ca4cafcd5b4eab16a8eea18e8fe0. The account showed no card
+on file and $0 accrued charges before deployment. Free hosting sleeps when idle
+and shares workspace quotas; it is not an uptime guarantee. No local PC server
+is required. Do not submit an expired tunnel URL. GitHub Pages alone cannot
 run the WebSocket relay. Do not replace the combat transport with polling-only
 serverless storage: that would require a different networking design.
 
@@ -60,4 +64,6 @@ serverless storage: that would require a different networking design.
   signed-in lesson was not readable through the research tool, so eligibility
   and submission compliance have not been certified.
 
-The owner will submit; no submission action has been taken by the assistant.
+The owner has requested submission assistance. Handshake remains behind sign-in;
+no submission action has been taken by the assistant and the deadline has not
+been verified.

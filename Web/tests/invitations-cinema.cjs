@@ -19,6 +19,9 @@ const output=path.resolve(__dirname,'../../output/playwright');
   assert.equal(new URL(invitation).searchParams.get('room'),'BEEFC099');
   passed.push('Host copies an invitation containing its active room');
   await guest.goto(invitation);await guest.getByRole('button',{name:'Decline',exact:true}).click({timeout:180000});
+  // The HTML invitation can be declined before the WebGL runtime loads on a
+  // cold public request. Wait for its diagnostic state before asserting it.
+  await wait(guest,()=>window.beaconbreakState!=null);
   assert.equal(await guest.evaluate(()=>window.beaconbreakState.verified),false);
   assert.equal(await guest.evaluate(()=>window.bbSocket==null),true);
   passed.push('Declining does not connect or start a fight');
