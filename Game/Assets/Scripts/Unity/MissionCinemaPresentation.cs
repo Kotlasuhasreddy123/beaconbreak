@@ -13,21 +13,24 @@ namespace CoopFighter.UnityGame
         };
         private void DrawVictoryCinema() {
             float elapsed=Mathf.Clamp(Time.unscaledTime-cinemaStarted,0,CinemaDuration);
-            int shot=elapsed<4?0:elapsed<9?1:2;
-            float p=shot==0?elapsed/4:shot==1?(elapsed-4)/5:(elapsed-9)/5;
-            int level=match.Level,next=Mathf.Min(100,level+1);
+            float first=CinemaDuration>14?11:4, second=CinemaDuration>14?23:9;
+            int shot=elapsed<first?0:elapsed<second?1:2;
+            float p=shot==0?elapsed/first:shot==1?(elapsed-first)/(second-first):(elapsed-second)/(CinemaDuration-second);
+            int level=match.Level,next=StoryCampaign.IsBoss(level)?StoryCampaign.Next(level):Mathf.Min(100,level+1);
             var recipe=MissionCinema.ForLevel(level);
             DrawChapterScenery(recipe.Chapter,elapsed,515);
             string heading,caption;
-            if(level==100) {
-                heading=shot==0?"MISSION 100 / THE PERFECT RECORD BREAKS":shot==1?"THE VOICES ARE FREE":"CAMPAIGN COMPLETE / A FUTURE FOR TWO";
-                if(shot<2)DrawCinemaAction(shot==0?CinemaAction.ChainBreak:CinemaAction.Collapse,p,recipe);
-                else { MotionActor(490,515,1.2f,1,scoutColor,0,0,0);MotionActor(720,515,1.2f,-1,gold,0,0,0); }
-                caption=shot==0?"Aster's command breaks. The archive no longer owns the people it remembers.":shot==1?"You carry the voices out together while the controller falls behind you.":CampaignStory.ForLevel(100).Secret;
+            if(shot<2 && StoryCampaign.IsBoss(level)) {
+                DrawGuardianScene(recipe.Chapter,shot,p);
+                heading=StoryCampaign.SceneTitles[recipe.Chapter];
+                caption=shot==0?StoryCampaign.Aftermath[recipe.Chapter]:StoryCampaign.Transfer[recipe.Chapter];
+            } else if(level==100) {
+                MotionActor(490,515,1.2f,1,scoutColor,0,0,0);MotionActor(720,515,1.2f,-1,gold,0,0,0);
+                heading="CAMPAIGN COMPLETE / AN UNWRITTEN MORNING";
+                caption=CampaignStory.ForLevel(100).Secret;
             } else if(shot<2) {
                 DrawCinemaAction(shot==0?recipe.First:recipe.Second,p,recipe);
-                heading="MISSION "+level.ToString("000")+" COMPLETE / "+(shot==0?recipe.First:recipe.Second).ToString().ToUpper();
-                caption=shot==0?recipe.Objective:recipe.Consequence;
+                heading=recipe.Title; caption=shot==0?recipe.Objective:recipe.Consequence;
             } else {
                 var incoming=MissionCinema.ForLevel(next);var stats=LevelSpec.Create(next);
                 // The reveal names the actual next opponent, not its chapter boss.
@@ -38,8 +41,8 @@ namespace CoopFighter.UnityGame
                 GUI.Label(new Rect(75,215,670,75),incoming.Title+"\n"+CampaignStory.ForLevel(next).Name,bodyStyle);
                 GUI.Label(new Rect(75,310,660,40),"BOSS HEALTH  "+stats.BossHealth+"     DAMAGE  "+stats.BossDamage,bodyStyle);
                 GUI.Label(new Rect(75,360,660,45),"STYLE  "+stats.Style.ToString().ToUpper()+"     SPEED  "+stats.BossSpeed,smallStyle);
-                GUI.Label(new Rect(75,410,650,45),"READ THE WIND-UP. CHANGE YOUR RHYTHM TOGETHER.",smallStyle);
-                heading="NEXT / MISSION "+next.ToString("000")+" OF 100";
+                GUI.Label(new Rect(75,410,650,45),StoryCampaign.Rule(next),smallStyle);
+                heading="NEXT / GUARDIAN "+StoryCampaign.Number(next)+" OF 10";
                 caption=next%10==0?CampaignStory.ForLevel(next).Opening:(nextProfile==null?incoming.Objective:nextProfile.StoryLine);
             }
             Box(new Rect(0,0,1280,95),ink);Box(new Rect(0,550,1280,170),ink);
@@ -47,7 +50,7 @@ namespace CoopFighter.UnityGame
             GUI.Label(new Rect(65,567,1150,85),caption,bodyStyle);
             Box(new Rect(65,675,875,3),new Color(.2f,.25f,.27f));
             Box(new Rect(65,675,875*elapsed/CinemaDuration,3),gold);
-            GUI.Label(new Rect(65,686,880,30),"MISSION "+level.ToString("000")+" / "+recipe.Title.ToUpper()+" / SHOT "+(shot+1)+" OF 3",smallStyle);
+            GUI.Label(new Rect(65,686,880,30),"GUARDIAN "+StoryCampaign.Number(level)+" / "+CampaignStory.ForLevel(level).Name.ToUpper()+" / SHOT "+(shot+1)+" OF 3",smallStyle);
             if(cinemaVote)GUI.Label(new Rect(970,665,280,45),"Waiting for partner's vote",smallStyle);
             else if(ActionButton(new Rect(970,665,260,42),"Vote to skip")){cinemaVote=true;Send(new NetworkEnvelope{kind="cinema_vote"});}
         }

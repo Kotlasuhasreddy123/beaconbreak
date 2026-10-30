@@ -49,13 +49,13 @@ namespace CoopFighter.UnityGame.Editor
             };
             Results results = new Results();
             foreach (Scenario scenario in cases)
-                foreach (int level in new[] { 1, 10, 25, 50, 75, 100 })
+                foreach (int level in new[] { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 })
                     for (int seed = 1; seed <= 3; seed++) results.runs.Add(RunOne(scenario, level, seed));
             CheckRegressions();
             Directory.CreateDirectory("TestResults");
             File.WriteAllText("TestResults/player-scenarios.json", JsonUtility.ToJson(results, true));
-            StringBuilder report = new StringBuilder("# Beaconbreak: 20 scenario simulation report\n\n");
-            report.Append("360 simulated fights: 20 behavior/network categories × 6 levels × 3 seeds. Each fight is capped at 180 simulated seconds. Input scripts use observed game state; these are reproducible bots, not human subjects. A timeout is recorded, not counted as victory.\n\n");
+            StringBuilder report = new StringBuilder("# Shadow Warriors: 20 scenario simulation report\n\n");
+            report.Append("600 simulated fights: 20 behavior/network categories × 10 guardians × 3 seeds. Each fight is capped at 180 simulated seconds. Input scripts use observed game state; these are reproducible bots, not human subjects. A timeout is recorded, not counted as victory.\n\n");
             report.Append("Network checks replay the same input trace through delayed/reordered/retransmitted delivery. They verify convergence, not subjective latency feel. Live two-process transport is a separate test.\n\n");
             report.Append("| Scenario | Wins | Losses | Timeouts | Average seconds | Ally hits | Replay / snapshot / rollback |\n|---|---:|---:|---:|---:|---:|---|\n");
             foreach (Scenario scenario in cases) {
@@ -87,6 +87,7 @@ namespace CoopFighter.UnityGame.Editor
                 if (SkillTree.CanBuy(level, mask, node)) mask = SkillTree.Buy(level, mask, node);
             CounterProfile profile = level == 1 ? null : CounterProfile.FromBattle(level - 1,
                 new BattleTelemetry { Attempts = new[] { 20, 20 }, Low = new[] { 15, 0 }, Aerial = new[] { 0, 15 } });
+            if (profile != null) profile.TargetLevel = level; // Synthetic fixture, not campaign routing.
             MatchState initial = Simulation.Start(level, profile, seed * 7919, mask);
             MatchState baseline = initial.Copy(), replay = initial.Copy();
             List<Buttons> a = new List<Buttons> { Buttons.None }, b = new List<Buttons> { Buttons.None };

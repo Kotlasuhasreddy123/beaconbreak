@@ -1,0 +1,11 @@
+{
+  "version": "3.0-ten-guardians",
+  "date": "2026-10-30",
+  "storyGuardians": 10,
+  "files": {
+    "public.data.gz": "e2886ae0133e6ae888682ebb8b4a78d4e75c490ba23a255d86063018a72d76b5",
+    "public.framework.js.gz": "e63b4396098ac3a525fb48b9b8cf4e1430c15abb7b3fa7d5dbb1008a521d2351",
+    "public.loader.js": "d72249044a05c112d9f736eb90d890450c4ce849c99c1f5043cc37dfeba4df28",
+    "public.wasm.gz": "adbabdd6430c84718bbf037e27831d6d0102ac54546ad9babbec61a233bf2f3b"
+  }
+}

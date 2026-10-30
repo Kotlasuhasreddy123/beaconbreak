@@ -8,6 +8,6 @@
     "Remote touch command reaches authoritative host",
     "Leave button returns partner to menu"
   ],
-  "base": "https://designing-clock-might-licenses.trycloudflare.com",
+  "base": "http://127.0.0.1:8787",
   "hardware": "Chromium desktop and touch emulation; not physical phones"
 }

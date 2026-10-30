@@ -1,0 +1,28 @@
+{
+  "base": "http://127.0.0.1:8787",
+  "level": 100,
+  "results": [
+    {
+      "role": "host",
+      "result": "credits",
+      "encounter": 1,
+      "level": 100,
+      "tick": 1115,
+      "hash": 362796970
+    },
+    {
+      "role": "guest",
+      "result": "credits",
+      "encounter": 1,
+      "level": 100,
+      "tick": 1115,
+      "hash": 362796970
+    }
+  ],
+  "shots": [
+    "C:\\Users\\suhas\\OneDrive\\Desktop\\Handshake Gameathon\\output\\playwright\\guardian-100-shot-1.png",
+    "C:\\Users\\suhas\\OneDrive\\Desktop\\Handshake Gameathon\\output\\playwright\\guardian-100-shot-2.png",
+    "C:\\Users\\suhas\\OneDrive\\Desktop\\Handshake Gameathon\\output\\playwright\\guardian-100-shot-3.png"
+  ],
+  "errors": []
+}

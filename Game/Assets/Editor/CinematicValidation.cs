@@ -19,11 +19,11 @@ namespace CoopFighter.UnityGame.Editor
                 mode("screen","Report");mode("playMode","Host");set("encounter",1);call("BeginCinema");
                 set("cinemaVote",true);call("UpdateCinema");Require(!(bool)get("cinemaComplete"),"One vote skipped");
                 set("remoteCinemaVote",true);call("UpdateCinema");Require((bool)get("cinemaComplete"),"Two votes did not skip");
-                set("encounter",2);call("BeginCinema");mode("playMode","Client");set("cinemaStarted",Time.unscaledTime-30);call("UpdateCinema");
+                set("encounter",2);call("BeginCinema");mode("playMode","Client");set("cinemaStarted",Time.unscaledTime-40);call("UpdateCinema");
                 Require(!(bool)get("cinemaComplete"),"Guest released itself without host");
                 mode("playMode","Host");mode("screen","Credits");set("encounter",3);call("BeginCinema");
                 Require((bool)typeof(GameBootstrap).GetProperty("CinemaActive",f).GetValue(game),"Final boss has no ending scene");
-                set("cinemaStarted",Time.unscaledTime-30);call("UpdateCinema");
+                set("cinemaStarted",Time.unscaledTime-40);call("UpdateCinema");
                 Require((bool)get("cinemaComplete")&&get("screen").ToString()=="Credits","Ending did not return to credits");
                 call("BeginCinema");Require((bool)get("cinemaComplete"),"Duplicate result replayed cinema");
                 Require(match.Hash()==hash,"Cinematic changed combat state");

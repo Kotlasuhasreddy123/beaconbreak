@@ -101,7 +101,7 @@ namespace CoopFighter.UnityGame
             GUI.Label(new Rect(85, 90, 600, 35), "T W O   F I G H T E R S .   O N E   L A S T   L I G H T .", smallStyle);
             GUI.Label(new Rect(80, 132, 650, 90), CampaignStory.Title, heroStyle);
             GUI.Label(new Rect(85, 228, 590, 80), "Defy the Beacon. Rewrite your fate.\nAn online martial-arts adventure for two.", bodyStyle);
-            GUI.Label(new Rect(85, 325, 590, 35), "CAMPAIGN / MISSION " + personalLevel.ToString("00") + "     •     2 DEVICES REQUIRED", smallStyle);
+            GUI.Label(new Rect(85, 325, 590, 35), "CAMPAIGN / GUARDIAN " + StoryCampaign.Number(personalLevel).ToString("00") + "     •     2 DEVICES REQUIRED", smallStyle);
             if (ActionButton(new Rect(85, 375, 280, 58), "Create room", true)) StartHost();
             if (ActionButton(new Rect(385, 375, 280, 58), "Join room")) JoinHost();
             GUI.Label(new Rect(85, 452, 135, 40), IsWeb ? "ROOM CODE" : "HOST ADDRESS", smallStyle);
@@ -123,7 +123,7 @@ namespace CoopFighter.UnityGame
             Panel(new Rect(160, 125, 960, 480));
             GUI.Label(new Rect(200, 160, 880, 50), playMode == PlayMode.Host ? "YOUR PARTNER'S PLACE IS READY" : "JOINING THE FIGHT", titleStyle);
             GUI.Label(new Rect(200, 240, 880, 80), IsWeb ? "ROOM  " + webRoom : "HOST  " + localAddresses, heroStyle);
-            GUI.Label(new Rect(200, 340, 880, 35), peerVerified ? "Partner connected / Mission "+nextLevel+" / "+CampaignStory.Opponent(nextLevel) : status, bodyStyle);
+            GUI.Label(new Rect(200, 340, 880, 35), peerVerified ? "Partner connected / Guardian "+StoryCampaign.Number(nextLevel)+" / "+CampaignStory.Opponent(nextLevel) : status, bodyStyle);
             GUI.Label(new Rect(200, 385, 880, 55), "“"+CampaignStory.ForLevel(nextLevel).Opening+"”", bodyStyle);
             if (playMode == PlayMode.Client && peerVerified && !localReady && ActionButton(new Rect(200, 445, 350, 55), "I'M READY", true)) ReadyGuest();
             if (playMode == PlayMode.Host || localReady) GUI.Label(new Rect(200, 455, 750, 40), "Waiting for your partner to press I'M READY…", bodyStyle);
@@ -132,16 +132,24 @@ namespace CoopFighter.UnityGame
         private void DrawFight()
         {
             LevelSpec spec = LevelSpec.Create(match.Level);
-            GUI.Label(new Rect(30, 12, 850, 45), spec.ActName.ToUpper() + " / MISSION " + match.Level.ToString("000")+" OF 100", titleStyle);
+            GUI.Label(new Rect(30, 12, 850, 45), spec.ActName.ToUpper() + " / GUARDIAN " + StoryCampaign.Number(match.Level)+" OF 10", titleStyle);
             GUI.Label(new Rect(930, 20, 320, 30), "YOU ARE " + (playMode == PlayMode.Host ? "P1 • CYAN" : "P2 • AMBER"), smallStyle);
             DrawHealth(30, 65, "P1 / THE SCOUT", match.Fighters[0], new Color(0.22f, 0.85f, 0.92f));
             DrawHealth(30, 110, "P2 / THE KEEPER", match.Fighters[1], gold);
             DrawHealth(800, 65, CampaignStory.Opponent(match.Level), match.Fighters[2], new Color(0.94f, 0.35f, 0.25f));
             GUI.Label(new Rect(800, 115, 430, 32), (180 - match.Tick / 60) + "s LEFT • " + spec.WeaponName.ToUpper(), smallStyle);
+            GUI.Label(new Rect(800, 145, 460, 32), StoryCampaign.Status(match), smallStyle);
+            FighterState warden=match.Fighters[2];
+            if(warden.AttackTicks>0 && (warden.Attack==AttackType.BossWave || warden.Attack==AttackType.BossSweep || warden.Attack==AttackType.BossCharge)) {
+                float bx=40+warden.X*.06f;
+                float reach=warden.Attack==AttackType.BossWave?540:warden.Attack==AttackType.BossSweep?216:300;
+                float origin=warden.Attack==AttackType.BossWave?bx-reach:warden.Facing<0?bx-reach:bx;
+                Box(new Rect(origin,558,warden.Attack==AttackType.BossWave?reach*2:reach,12),new Color(1,.3f,.16f,warden.AttackTicks>9?.35f:.85f));
+            }
             for (int i = 0; i < 3; i++) DrawFighter(match.Fighters[i], i);
             if (match.Fighters[2].AttackTicks > 9) {
                 float x = 40 + match.Fighters[2].X * 0.06f;
-                GUI.Label(new Rect(x - 75, 300 - match.Fighters[2].Y / 40f, 240, 40), "! " + (match.Fighters[2].Attack == AttackType.BossAntiAir ? "ANTI-AIR" : "STRIKE"), bodyStyle);
+                GUI.Label(new Rect(x - 75, 300 - match.Fighters[2].Y / 40f, 240, 40), "! " + StoryCampaign.Tell(match.Fighters[2].Attack), bodyStyle);
             }
             if (Time.unscaledTime < impactUntil && impactTarget > 0) {
                 FighterState target = match.Fighters[impactTarget - 1]; float x = 40 + target.X * 0.06f, y = 435 - target.Y / 40f;
@@ -158,13 +166,13 @@ namespace CoopFighter.UnityGame
                 GUI.Label(new Rect(30, 662, 1220, 35), "TANDEM " + (!spec.TandemUnlocked ? "UNLOCKS AT LEVEL 5" : match.TandemCooldown == 0 ? "READY — PRESS U TOGETHER NEAR THE BOSS" : "RECHARGING") + " • ALLY HITS " + match.Telemetry.FriendlyHits, smallStyle);
             }
             if (rollback != null && rollback.WaitingForRemote) GUI.Label(new Rect(390, 230, 700, 50), "Waiting for partner's connection…", bodyStyle);
-            if (match.Tick < 300) GUI.Label(new Rect(260, 195, 850, 80), MissionCinema.ForLevel(match.Level).Title+"\nGuard the wind-up. Flank together. Avoid ally hits.", bodyStyle);
+            GUI.Label(new Rect(30, 180, 1080, 75), StoryCampaign.Rule(match.Level), bodyStyle);
             if (ActionButton(new Rect(1145, 180, 110, 34), "Leave")) ReturnToHub();
         }
         private void DrawReport()
         {
             Panel(new Rect(130, 90, 1020, 550));
-            GUI.Label(new Rect(175, 120, 930, 55), "MISSION "+match.Level.ToString("000")+" COMPLETE / NEXT "+nextLevel.ToString("000"), titleStyle);
+            GUI.Label(new Rect(175, 120, 930, 55), "GUARDIAN "+StoryCampaign.Number(match.Level)+" DEFEATED / NEXT "+StoryCampaign.Number(nextLevel), titleStyle);
             ChapterStory defeated=CampaignStory.ForLevel(match.Level);
             GUI.Label(new Rect(175, 195, 900, 110), match.Level%10==0?defeated.Villain+": “"+defeated.Defeat+"”":"A relay flashes behind the fallen guardian. "+defeated.Villain+" receives your combat record. The next enemy will know more about you.", bodyStyle);
             Line(new Vector2(235, 320), new Vector2(1030, 320), 3, gold);
@@ -173,8 +181,8 @@ namespace CoopFighter.UnityGame
                 GUI.Label(new Rect(175, 365, 920, 80), "“" + nextProfile.StoryLine + "”", bodyStyle);
                 GUI.Label(new Rect(175, 450, 920, 40), "LOW GUARD " + nextProfile.LowBlockWeight + "% / ANTI-AIR " + nextProfile.AntiAirWeight + "% / PRESSURE " + nextProfile.PressureWeight + "%", smallStyle);
             }
-            GUI.Label(new Rect(175,495,900,35),"Saved on this device / Mission "+personalLevel+" unlocked / "+SkillTree.PointsAvailable(personalLevel,skillMask)+" upgrade points",smallStyle);
-            DrawReady(new Rect(175, 545, 420, 55), "Continue / Mission " + nextLevel);
+            GUI.Label(new Rect(175,495,900,35),"Saved on this device / Guardian "+StoryCampaign.Number(personalLevel)+" unlocked / "+SkillTree.PointsAvailable(personalLevel,skillMask)+" upgrade points",smallStyle);
+            DrawReady(new Rect(175, 545, 420, 55), "Face guardian " + StoryCampaign.Number(nextLevel));
             if (playMode == PlayMode.Host && ActionButton(new Rect(650, 545, 420, 55), "Upgrade skills")) { returnFromSkills = screen; screen = ScreenMode.Skills; }
         }
         private void DrawDefeat()
@@ -218,7 +226,22 @@ namespace CoopFighter.UnityGame
             Line(hips, hips + new Vector2(-32 - stride * 0.4f, 17), 8, accent);
             Line(head + new Vector2(-14, -4), head + new Vector2(16, -4), 5, accent);
             Line(hand - new Vector2(5, 0), hand + new Vector2(5, 0), 7, accent);
-            if (index == 2) { Line(head + new Vector2(-12, -8), head + new Vector2(-28, -30), 8, ink); Line(head + new Vector2(10, -10), head + new Vector2(18, -35), 8, ink); }
+            if (index == 2 && match != null) {
+                int identity=StoryCampaign.Number(match.Level);
+                // Readable silhouettes: shield, mirror halo, chain, veil, storm
+                // crest, choir mantle, machine blade, scout scarf, witness staff,
+                // and the architect's broken crown.
+                if(identity==1)Line(hand+new Vector2(0,-28),hand+new Vector2(0,35),24,accent);
+                if(identity==2)for(int j=0;j<6;j++)Disc(head+new Vector2(Mathf.Cos(j)*31,Mathf.Sin(j)*31),5,accent);
+                if(identity==3)for(int j=0;j<7;j++)Disc(hand+new Vector2(j*9,Mathf.Sin(j)*9+20),5,accent);
+                if(identity==4)Line(head+new Vector2(-12,-12),chest+new Vector2(-30,40),13,accent);
+                if(identity==5)for(int j=0;j<3;j++)Line(head+new Vector2(j*10-10,-10),head+new Vector2(j*17-17,-45),5,accent);
+                if(identity==6)Line(chest+new Vector2(-30,0),hips+new Vector2(-48,20),26,accent);
+                if(identity==7)Line(hand,hand+new Vector2(95,-15),18,accent);
+                if(identity==8)Line(chest,chest+new Vector2(-75,15+stride),9,accent);
+                if(identity==9)Line(hand+new Vector2(15,-75),hand+new Vector2(15,100),8,accent);
+                if(identity==10)for(int j=0;j<5;j++)Line(head+new Vector2(j*8-16,-15),head+new Vector2(j*10-20,-40-(j%2)*12),7,gold);
+            }
             int tier = match == null ? 0 : LevelSpec.Create(match.Level).WeaponTier;
             Vector2 tip = hand + new Vector2(attacking ? 38 + tier * 7 : 12, attacking ? -10 : -60 - tier * 9);
             Line(hand, tip, tier == 1 ? 5 : 8, new Color(0.62f, 0.65f, 0.58f)); Line(hand + new Vector2(-8, -4), hand + new Vector2(10, 4), 5, accent);

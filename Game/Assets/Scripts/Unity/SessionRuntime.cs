@@ -18,7 +18,7 @@ namespace CoopFighter.UnityGame
         private readonly List<TestResult> completedTests = new List<TestResult>();
         private string localAddresses = "";
         private string webRoom = "", requestedRoom;
-        private bool browserBot;
+        private bool browserBot, storyTest;
         private float lastBrowserPublish;
 #if UNITY_WEBGL && !UNITY_EDITOR
         private const bool IsWeb = true;
@@ -93,7 +93,12 @@ namespace CoopFighter.UnityGame
             if (parts.Length < 2) return;
             requestedRoom = parts[1].ToUpperInvariant();
             browserBot = parts.Length > 2 && parts[2] == "bot";
-            if (browserBot) { nextLevel = 5; skillMask = 0; nextProfile = null; }
+            storyTest = browserBot && parts.Length > 3;
+            if (browserBot) {
+                int requestedLevel;
+                nextLevel = storyTest && int.TryParse(parts[3],out requestedLevel) ? StoryCampaign.Normalize(requestedLevel) : 5;
+                skillMask = 0; nextProfile = null;
+            }
             if (parts[0] == "host") StartHost();
             else { joinAddress = requestedRoom; JoinHost(); }
         }
@@ -112,7 +117,7 @@ namespace CoopFighter.UnityGame
         private void PublishBrowserStatus() {
 #if UNITY_WEBGL && !UNITY_EDITOR
             BB_Status(JsonUtility.ToJson(new BrowserStatus { screen = screen.ToString(), role = playMode.ToString(), room = webRoom,
-                playerName=fighterName,cinema=CinemaActive,skipVoted=cinemaVote,cinemaShot=CinemaActive?(Time.unscaledTime-cinemaStarted<4?1:Time.unscaledTime-cinemaStarted<9?2:3):0,
+                playerName=fighterName,cinema=CinemaActive,skipVoted=cinemaVote,cinemaShot=CinemaActive?(Time.unscaledTime-cinemaStarted<(CinemaDuration>14?11:4)?1:Time.unscaledTime-cinemaStarted<(CinemaDuration>14?23:9)?2:3):0,
                 encounter = encounter, verified = peerVerified, tick = match == null ? 0 : match.Tick,
                 level = match == null ? nextLevel : match.Level, result = match == null ? "" : match.Result.ToString(),
                 hash = match == null ? 0 : match.Hash(), hp1 = match == null ? 0 : match.Fighters[0].Health,
@@ -148,7 +153,7 @@ namespace CoopFighter.UnityGame
             }
             testResults++;
             // Exercise a same-level restart followed by normal next-level progression.
-            if (playMode == PlayMode.Host && testResults == 1 && result == "report") nextLevel = final.Level;
+            if (!storyTest && playMode == PlayMode.Host && testResults == 1 && result == "report") nextLevel = final.Level;
             testFinishAt = Time.realtimeSinceStartup + 3f;
             PublishBrowserStatus();
         }

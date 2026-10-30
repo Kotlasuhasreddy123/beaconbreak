@@ -12,14 +12,14 @@ namespace CoopFighter.UnityGame
         private bool campaignComplete;
         private void LoadPersonalRecord() {
             fighterName = PlayerPrefs.GetString("dusk_name", "Wanderer");
-            personalLevel = Mathf.Clamp(PlayerPrefs.GetInt("cf_highest_level", 1), 1, 100);
+            personalLevel = StoryCampaign.Normalize(PlayerPrefs.GetInt("cf_highest_level", 1));
             campaignComplete = PlayerPrefs.GetInt("dusk_complete", 0) == 1;
         }
         // Called only on host-confirmed victory, on BOTH devices. Idempotent
         // maximum progress prevents retries or duplicate packets granting points twice.
         private void SavePersonalVictory(MatchState final) {
             if (automatedTest || browserBot || final == null || final.Result != MatchResult.Victory) return;
-            personalLevel = Mathf.Max(personalLevel, Mathf.Min(100, final.Level + 1));
+            personalLevel = Mathf.Max(personalLevel, (StoryCampaign.IsBoss(final.Level) ? StoryCampaign.Next(final.Level) : Mathf.Min(100, final.Level + 1)));
             PlayerPrefs.SetInt("cf_highest_level", personalLevel);
             if (final.Level == 100) { campaignComplete = true; PlayerPrefs.SetInt("dusk_complete", 1); }
             PlayerPrefs.Save();
@@ -41,7 +41,7 @@ namespace CoopFighter.UnityGame
             ChapterStory chapter=CampaignStory.Chapters[chronicleChapter];
             bool unlocked=personalLevel>=chronicleChapter*10+1;
             GUI.Label(new Rect(420,180,755,45), chapter.Villain.ToUpper()+" / "+chapter.Title, titleStyle);
-            GUI.Label(new Rect(420,240,740,100), unlocked?chapter.Motive:"This guardian's history is sealed. Reach mission "+(chronicleChapter*10+1)+" to discover it.", bodyStyle);
+            GUI.Label(new Rect(420,240,740,100), unlocked?chapter.Motive:"This guardian's history is sealed. Reach guardian "+(chronicleChapter+1)+" to discover it.", bodyStyle);
             GUI.Label(new Rect(420,360,740,95), unlocked?"“"+chapter.Opening+"”":"Your journey has not reached this chapter yet.", bodyStyle);
             bool resolved=personalLevel>=(chronicleChapter+1)*10+1 || chronicleChapter==9&&campaignComplete;
             GUI.Label(new Rect(420,485,740,100), resolved?chapter.Secret:"Defeat the chapter guardian to uncover the truth behind the Beacon.", smallStyle);
@@ -52,7 +52,7 @@ namespace CoopFighter.UnityGame
             GUI.Label(new Rect(100,75,1040,50), "FIGHT TOGETHER. SURVIVE TOGETHER.",titleStyle);
             GUI.Label(new Rect(100,145,1040,100), CampaignStory.Prologue,bodyStyle);
             string[] headings={"01 / POSITION","02 / READ & RESPOND","03 / BREAK THE PATTERN"};
-            string[] details={"A / D to move. Space to jump.\nTake opposite sides of the boss.\nYour strikes can hurt your ally.","J: low strike. K: high strike.\nL: guard while facing the attack.\nPunish the boss after its wind-up.","Vary low, high and aerial attacks.\nBosses learn your repeated moves.\nAt mission 5, press U together\nnear the boss for a Duo Strike."};
+            string[] details={"A / D to move. Space to jump.\nTake opposite sides of the boss.\nYour strikes can hurt your ally.","J: low strike. K: high strike.\nL: guard while facing the attack.\nPunish the boss after its wind-up.","Vary low, high and aerial attacks.\nBosses learn your repeated moves.\nPress U together\nnear the boss for a Duo Strike."};
             for(int i=0;i<3;i++){
                 Panel(new Rect(100+i*350,285,325,230));
                 GUI.Label(new Rect(120+i*350,305,290,50),headings[i],smallStyle);
@@ -66,7 +66,7 @@ namespace CoopFighter.UnityGame
             GUI.Label(new Rect(225,105,820,60),"YOUR FIGHTER RECORD",titleStyle);
             GUI.Label(new Rect(225,175,820,40),"Fighter name (saved on this device)",bodyStyle);
             fighterName=GUI.TextField(new Rect(225,225,810,50),fighterName,20);
-            GUI.Label(new Rect(225,310,800,100),"Mission reached: "+personalLevel+" / 100\n"+(campaignComplete?"The Beacon is free. Campaign complete.":"Current chapter: "+CampaignStory.ForLevel(personalLevel).Name),bodyStyle);
+            GUI.Label(new Rect(225,310,800,100),"Guardian reached: "+StoryCampaign.Number(personalLevel)+" / 10\n"+(campaignComplete?"The Beacon is free. Campaign complete.":"Current chapter: "+CampaignStory.ForLevel(personalLevel).Name),bodyStyle);
             GUI.Label(new Rect(225,430,800,95),"This is a local player record, not an online account. Both players retain mission progress after confirmed victories. Expedition upgrades are chosen by the host and apply to both fighters.",bodyStyle);
             if(ActionButton(new Rect(225,565,380,50),"Save name & return",true)){
                 fighterName=fighterName.Trim();if(fighterName.Length==0)fighterName="Wanderer";
@@ -76,14 +76,14 @@ namespace CoopFighter.UnityGame
         private void DrawUpgrades() {
             Panel(new Rect(45,30,1190,655));
             GUI.Label(new Rect(80,55,1100,50),"EXPEDITION UPGRADES",titleStyle);
-            GUI.Label(new Rect(80,110,1100,55),SkillTree.PointsAvailable(personalLevel,skillMask)+" points available / Earn one point per five missions. Host upgrades help both fighters.",bodyStyle);
+            GUI.Label(new Rect(80,110,1100,55),SkillTree.PointsAvailable(personalLevel,skillMask)+" points available / Each guardian advances two upgrade milestones. Host upgrades help both fighters.",bodyStyle);
             int start=skillsPage*6;
             for(int slot=0;slot<6 && start+slot<SkillTree.OrderedNodes.Length;slot++){
                 SkillNode node=SkillTree.OrderedNodes[start+slot];int x=80+(slot%2)*565,y=185+(slot/2)*130;
                 bool owned=SkillTree.Has(skillMask,node.Bit),can=SkillTree.CanBuy(personalLevel,skillMask,node);
                 Panel(new Rect(x,y,535,114));
                 GUI.Label(new Rect(x+18,y+12,315,32),node.Name,bodyStyle);
-                GUI.Label(new Rect(x+18,y+48,315,52),node.Effect+" / Mission "+node.RequiredLevel,smallStyle);
+                GUI.Label(new Rect(x+18,y+48,315,52),node.Effect+" / Guardian "+StoryCampaign.Number(node.RequiredLevel),smallStyle);
                 bool old=GUI.enabled;GUI.enabled=can && (network==null || playMode!=PlayMode.Client);
                 if(ActionButton(new Rect(x+355,y+25,160,60),owned?"Unlocked":can?"Unlock / 1 pt":"Locked",can)){
                     skillMask=SkillTree.Buy(personalLevel,skillMask,node);PlayerPrefs.SetInt("cf_skill_mask",skillMask);PlayerPrefs.Save();

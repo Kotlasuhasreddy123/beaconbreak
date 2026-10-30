@@ -8,7 +8,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 7,"Ash / The lock gives way",ChainBreak,Ambush,8,902,9,70
 8,"Ash / Eyes in the dark",Ambush,Collapse,9,944,9,70
 9,"Ash / The falling bridge",Collapse,Signal,10,986,9,70
-10,"Ash / The final transmission",Signal,Pursuit,11,1378,9,88
+10,"Ash / The final transmission",Signal,Pursuit,11,1050,9,88
 11,"Glass / The stolen route",Pursuit,Slide,12,1070,10,91
 12,"Glass / Above the barricade",Vault,WallRun,13,1112,10,73
 13,"Glass / Beneath the blades",Slide,Duel,14,1154,10,73
@@ -18,7 +18,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 17,"Glass / The lock gives way",ChainBreak,Collapse,18,1322,11,73
 18,"Glass / Eyes in the dark",Ambush,Signal,19,1364,11,73
 19,"Glass / The falling bridge",Collapse,Pursuit,20,1406,11,91
-20,"Glass / The final transmission",Signal,Vault,21,1798,11,73
+20,"Glass / The final transmission",Signal,Vault,21,1205,11,73
 21,"Iron / The stolen route",Pursuit,WallRun,22,1490,12,76
 22,"Iron / Above the barricade",Vault,Duel,23,1532,12,76
 23,"Iron / Beneath the blades",Slide,Rescue,24,1574,12,76
@@ -28,7 +28,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 27,"Iron / The lock gives way",ChainBreak,Signal,28,1742,13,76
 28,"Iron / Eyes in the dark",Ambush,Pursuit,29,1784,13,94
 29,"Iron / The falling bridge",Collapse,Vault,30,1826,13,76
-30,"Iron / The final transmission",Signal,Slide,31,2218,13,76
+30,"Iron / The final transmission",Signal,Slide,31,1360,13,76
 31,"Hollow / The stolen route",Pursuit,Duel,32,1910,14,79
 32,"Hollow / Above the barricade",Vault,Rescue,33,1952,14,79
 33,"Hollow / Beneath the blades",Slide,ChainBreak,34,1994,14,97
@@ -38,7 +38,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 37,"Hollow / The lock gives way",ChainBreak,Pursuit,38,2162,15,97
 38,"Hollow / Eyes in the dark",Ambush,Vault,39,2204,15,79
 39,"Hollow / The falling bridge",Collapse,Slide,40,2246,15,79
-40,"Hollow / The final transmission",Signal,WallRun,41,2638,15,79
+40,"Hollow / The final transmission",Signal,WallRun,41,1515,15,79
 41,"Storm / The stolen route",Pursuit,Rescue,42,2330,16,82
 42,"Storm / Above the barricade",Vault,ChainBreak,43,2372,16,100
 43,"Storm / Beneath the blades",Slide,Ambush,44,2414,16,82
@@ -48,7 +48,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 47,"Storm / The lock gives way",ChainBreak,Vault,48,2582,17,82
 48,"Storm / Eyes in the dark",Ambush,Slide,49,2624,17,82
 49,"Storm / The falling bridge",Collapse,WallRun,50,2666,17,82
-50,"Storm / The final transmission",Signal,Duel,51,3058,17,100
+50,"Storm / The final transmission",Signal,Duel,51,1670,17,100
 51,"Copper / The stolen route",Pursuit,ChainBreak,52,2750,18,103
 52,"Copper / Above the barricade",Vault,Ambush,53,2792,18,85
 53,"Copper / Beneath the blades",Slide,Collapse,54,2834,18,85
@@ -58,7 +58,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 57,"Copper / The lock gives way",ChainBreak,Slide,58,3002,19,85
 58,"Copper / Eyes in the dark",Ambush,WallRun,59,3044,19,85
 59,"Copper / The falling bridge",Collapse,Duel,60,3086,19,103
-60,"Copper / The final transmission",Signal,Rescue,61,3478,19,85
+60,"Copper / The final transmission",Signal,Rescue,61,1825,19,85
 61,"Moon / The stolen route",Pursuit,Ambush,62,3170,20,88
 62,"Moon / Above the barricade",Vault,Collapse,63,3212,20,88
 63,"Moon / Beneath the blades",Slide,Signal,64,3254,20,88
@@ -68,7 +68,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 67,"Moon / The lock gives way",ChainBreak,WallRun,68,3422,21,88
 68,"Moon / Eyes in the dark",Ambush,Duel,69,3464,21,106
 69,"Moon / The falling bridge",Collapse,Rescue,70,3506,21,88
-70,"Moon / The final transmission",Signal,ChainBreak,71,3898,21,88
+70,"Moon / The final transmission",Signal,ChainBreak,71,1980,21,88
 71,"Silent / The stolen route",Pursuit,Collapse,72,3590,22,91
 72,"Silent / Above the barricade",Vault,Signal,73,3632,22,91
 73,"Silent / Beneath the blades",Slide,Pursuit,74,3674,22,109
@@ -78,7 +78,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 77,"Silent / The lock gives way",ChainBreak,Duel,78,3842,23,109
 78,"Silent / Eyes in the dark",Ambush,Rescue,79,3884,23,91
 79,"Silent / The falling bridge",Collapse,ChainBreak,80,3926,23,91
-80,"Silent / The final transmission",Signal,Ambush,81,4318,23,91
+80,"Silent / The final transmission",Signal,Ambush,81,2135,23,91
 81,"Rift / The stolen route",Pursuit,Signal,82,4010,24,94
 82,"Rift / Above the barricade",Vault,Pursuit,83,4052,24,112
 83,"Rift / Beneath the blades",Slide,Vault,84,4094,24,94
@@ -88,7 +88,7 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 87,"Rift / The lock gives way",ChainBreak,Rescue,88,4262,25,94
 88,"Rift / Eyes in the dark",Ambush,ChainBreak,89,4304,25,94
 89,"Rift / The falling bridge",Collapse,Ambush,90,4346,25,94
-90,"Rift / The final transmission",Signal,Collapse,91,4738,25,112
+90,"Rift / The final transmission",Signal,Collapse,91,2290,25,112
 91,"Beacon / The stolen route",Pursuit,Rescue,92,4430,26,115
 92,"Beacon / Above the barricade",Vault,ChainBreak,93,4472,26,97
 93,"Beacon / Beneath the blades",Slide,Ambush,94,4514,26,97
@@ -98,4 +98,4 @@ level,title,first_action,second_action,next_level,boss_health,boss_damage,boss_s
 97,"Beacon / The lock gives way",ChainBreak,Vault,98,4682,27,97
 98,"Beacon / Eyes in the dark",Ambush,Slide,99,4724,27,97
 99,"Beacon / The falling bridge",Collapse,WallRun,100,4766,27,115
-100,"Beacon / The final transmission",Signal,Duel,ENDING,5158,27,97
+100,"Beacon / The final transmission",Signal,Duel,ENDING,2445,27,97

@@ -12,7 +12,7 @@ namespace CoopFighter.Game
     public enum FighterKind { Player, Boss }
     public enum MatchResult { Fighting, Victory, Defeat }
     public enum BossStyle { Sentinel, Duelist, Grappler, Zoner }
-    public enum AttackType { None, Low, High, Aerial, BossStrike, BossAntiAir }
+    public enum AttackType { None, Low, High, Aerial, BossStrike, BossAntiAir, BossSweep, BossCharge, BossWave }
 
     [Serializable]
     public sealed class LevelSpec
@@ -63,8 +63,8 @@ namespace CoopFighter.Game
                 ActStory = stories[act],
                 BossName = acts[act] + " " + titles[(int)style] + " " + (encounter + 1),
                 Style = style,
-                // A bounded 3.5x campaign curve; later acts add tactical depth.
-                BossHealth = 650 + (level - 1) * 42 + (encounter == 9 ? 350 : 0),
+                // Story bosses use a shorter health curve; counterplay supplies difficulty.
+                BossHealth = StoryCampaign.IsBoss(level) ? 1050 + act * 155 : 650 + (level - 1) * 42,
                 BossDamage = 8 + (level - 1) / 5,
                 BossSpeed = 70 + act * 3 + (style == BossStyle.Duelist ? 18 : 0),
                 ArenaWidth = 20000,
@@ -156,7 +156,7 @@ namespace CoopFighter.Game
                 telemetry.BossDamage[0] * 100 >= totalBossDamage * 60 ? 1 :
                 telemetry.BossDamage[1] * 100 >= totalBossDamage * 60 ? 2 : 0;
             return new CounterProfile {
-                SourceLevel = completedLevel, TargetLevel = completedLevel + 1,
+                SourceLevel = completedLevel, TargetLevel = StoryCampaign.IsBoss(completedLevel) ? StoryCampaign.Next(completedLevel) : completedLevel + 1,
                 LowBlockWeight = low ? 55 : 20,
                 AntiAirWeight = aerial ? 55 : 20,
                 PressureWeight = pressure ? 45 : 20,
@@ -359,6 +359,12 @@ namespace CoopFighter.Game
                 FighterState focus = state.Fighters[state.Adaptation.FocusPlayer - 1];
                 if (focus.Health > 0 && Math.Abs(focus.X - boss.X) < 6500) target = focus;
             }
+            int chapter = StoryCampaign.Number(state.Level);
+            bool story = StoryCampaign.IsBoss(state.Level);
+            if (story && chapter == 4) {
+                int marked = state.Telemetry.BossDamage[0] >= state.Telemetry.BossDamage[1] ? 0 : 1;
+                if (state.Fighters[marked].Health > 0) target = state.Fighters[marked];
+            }
             int distance = target.X - boss.X;
             // A committed attack cannot swivel to track a fighter crossing behind it.
             if (boss.AttackTicks == 0) boss.Facing = distance < 0 ? -1 : 1;
@@ -366,6 +372,7 @@ namespace CoopFighter.Game
             LevelSpec spec = LevelSpec.Create(state.Level);
             int preferred = spec.Style == BossStyle.Zoner ? 3800 :
                 spec.Style == BossStyle.Grappler ? 1100 : 1500;
+            if (story) preferred = 1600;
             if (state.Adaptation != null && state.Adaptation.PressureWeight >= 40)
                 preferred = Math.Min(preferred, 1000);
             if (boss.StunTicks == 0 && boss.AttackTicks == 0)
@@ -380,9 +387,12 @@ namespace CoopFighter.Game
                     int antiWeight = state.Adaptation == null ? 20 : state.Adaptation.AntiAirWeight;
                     boss.Attack = airborne && NextRandom(state) % 100 < antiWeight ?
                         AttackType.BossAntiAir : AttackType.BossStrike;
+                    if (story) { boss.ComboDepth++; boss.Attack = StoryCampaign.Attack(state, boss.Attack); }
                     // Every boss attack has a visible wind-up before the 9..4 active window.
                     boss.AttackTicks = spec.Style == BossStyle.Duelist ? 18 : 24;
                     boss.AttackCooldown = spec.Style == BossStyle.Duelist ? 28 : 40;
+                    if (story) { boss.AttackTicks = boss.Attack == AttackType.BossWave ? 64 : boss.Attack == AttackType.BossCharge ? 52 : 40;
+                        boss.AttackCooldown = boss.AttackTicks + 42; }
                     boss.HitTargets = 0;
                 }
             }
@@ -394,6 +404,10 @@ namespace CoopFighter.Game
                 bool incomingLow = (p1.Attack == AttackType.Low && p1.AttackTicks > 0) ||
                     (p2.Attack == AttackType.Low && p2.AttackTicks > 0);
                 boss.Guarding = incomingLow && roll < lowWeight;
+            }
+            if (story && (chapter == 1 || chapter == 10 && boss.Health*3 > boss.MaxHealth*2)) boss.Guarding = boss.AttackTicks > 9 || boss.AttackCooldown == 0;
+            if (story && boss.Attack == AttackType.BossCharge && boss.AttackTicks >= 4 && boss.AttackTicks <= 16) {
+                boss.X = Clamp(boss.X + boss.Facing * 250, 500, spec.ArenaWidth - 500);
             }
         }
 
@@ -425,14 +439,18 @@ namespace CoopFighter.Game
                 (attacker.HitTargets & (1 << targetIndex)) != 0) return;
             if (attacker.Kind == FighterKind.Boss && target.Kind == FighterKind.Boss) return;
             int dx = target.X - attacker.X;
-            if (dx * attacker.Facing < 0) return;
+            if (dx * attacker.Facing < 0 && attacker.Attack != AttackType.BossWave) return;
             int range = (attacker.Attack == AttackType.BossStrike ||
                 attacker.Attack == AttackType.BossAntiAir) &&
                 LevelSpec.Create(state.Level).Style == BossStyle.Zoner ? 4500 :
                 attacker.Attack == AttackType.Low ? 1500 : 2000 +
                 (attacker.Kind == FighterKind.Player ? LevelSpec.Create(state.Level).WeaponTier * 200 +
                     (SkillTree.Has(state.SkillMask, 2) ? 200 : 0) : 0);
+            if (attacker.Attack == AttackType.BossWave) range = 9000;
+            if (attacker.Attack == AttackType.BossSweep) range = 3600;
+            if (attacker.Attack == AttackType.BossCharge) range = 2400;
             if (Math.Abs(dx) > range) return;
+            if ((attacker.Attack == AttackType.BossSweep || attacker.Attack == AttackType.BossWave || attacker.Attack == AttackType.BossCharge) && target.Y > 700) return;
             if (attacker.Attack == AttackType.Low && target.Y > 700) return;
             if (attacker.Attack == AttackType.High && Math.Abs(target.Y - attacker.Y) > 1600) return;
             if (attacker.Attack == AttackType.Aerial && Math.Abs(target.Y - attacker.Y) > 1300) return;
@@ -457,6 +475,21 @@ namespace CoopFighter.Game
                 damage = Math.Max(1, damage / 2);
             if (target.Kind == FighterKind.Boss && blocked &&
                 SkillTree.Has(state.SkillMask, 18)) damage += 5;
+            // Bespoke defenses are deterministic and have explicit counterplay.
+            if (target.Kind == FighterKind.Boss && StoryCampaign.IsBoss(state.Level)) {
+                int chapter = StoryCampaign.Number(state.Level);
+                if (chapter == 2) {
+                    int slot = attackerIndex;
+                    bool copiedLow = state.Telemetry.Attempts[slot] >= 6 && state.Telemetry.Low[slot]*2 > state.Telemetry.Attempts[slot];
+                    bool copiedAir = state.Telemetry.Attempts[slot] >= 6 && state.Telemetry.Aerial[slot]*2 > state.Telemetry.Attempts[slot];
+                    int highAttempts = state.Telemetry.Attempts[slot]-state.Telemetry.Low[slot]-state.Telemetry.Aerial[slot];
+                    bool copiedHigh = state.Telemetry.Attempts[slot] >= 6 && highAttempts*2 > state.Telemetry.Attempts[slot];
+                    if (copiedLow && attacker.Attack == AttackType.Low || copiedAir && attacker.Attack == AttackType.Aerial || copiedHigh && attacker.Attack == AttackType.High)
+                        damage = Math.Max(1, damage/3);
+                }
+                if (chapter == 6 && (state.Fighters[0].Health<=0 || state.Fighters[1].Health<=0 || (long)(state.Fighters[0].X-target.X)*(state.Fighters[1].X-target.X) >= 0))
+                    damage = Math.Max(1, damage/4);
+            }
             // Allies can disrupt spacing but cannot deliberately finish a teammate.
             damage = Math.Min(damage, friendly ? Math.Max(0, target.Health - 1) : target.Health);
             target.Health -= damage;
@@ -472,6 +505,10 @@ namespace CoopFighter.Game
             {
                 FighterState ally = state.Fighters[1 - targetIndex];
                 push = ally.X < target.X ? -440 : 440;
+            }
+            if (attacker.Kind == FighterKind.Boss && StoryCampaign.IsBoss(state.Level) && StoryCampaign.Number(state.Level) == 3) {
+                FighterState ally = state.Fighters[1-targetIndex];
+                push = ally.X < target.X ? -1100 : 1100;
             }
             target.X = Clamp(target.X + push, 500,
                 LevelSpec.Create(state.Level).ArenaWidth - 500);

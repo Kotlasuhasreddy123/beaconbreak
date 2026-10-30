@@ -6,7 +6,7 @@ namespace CoopFighter.UnityGame
     {
         // Presentation begins only after a confirmed result. Only the host can
         // release the transition; early skipping requires both players' votes.
-        private const float CinemaDuration=14f;
+        private float CinemaDuration { get { return match != null && CoopFighter.Game.StoryCampaign.IsBoss(match.Level) ? 32f : 14f; } }
         private float cinemaStarted;
         private bool cinemaComplete=true, cinemaVote, remoteCinemaVote;
         private int cinemaEncounter=-1;

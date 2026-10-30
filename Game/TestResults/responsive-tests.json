@@ -1,5 +1,5 @@
 {
-  "base": "https://designing-clock-might-licenses.trycloudflare.com",
+  "base": "http://127.0.0.1:8787",
   "scope": "Edge/Chromium screen-size and touch emulation, not physical hardware",
   "cases": [
     {

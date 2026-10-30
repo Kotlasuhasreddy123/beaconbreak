@@ -53,7 +53,7 @@ namespace CoopFighter.UnityGame
             pixel.SetPixel(0, 0, Color.white);
             pixel.Apply();
             int saved = PlayerPrefs.GetInt("cf_highest_level", 1);
-            nextLevel = Mathf.Clamp(saved, 1, 100);
+            nextLevel = StoryCampaign.Normalize(saved);
             skillMask = PlayerPrefs.GetInt("cf_skill_mask", 0);
             LoadPersonalRecord();
             string savedProfile = PlayerPrefs.GetString("cf_next_profile", "");
@@ -156,7 +156,7 @@ namespace CoopFighter.UnityGame
             }
 
             nextProfile = CounterProfile.FromBattle(match.Level, match.Telemetry.Copy());
-            nextLevel = match.Level + 1;
+            nextLevel = nextProfile.TargetLevel;
             // This local save is performed once when the fight first reaches
             // victory. An online host will be the sole progression authority.
             if (!automatedTest && !browserBot) {
@@ -573,10 +573,10 @@ namespace CoopFighter.UnityGame
 
         private void DrawCredits()
         {
-            GUI.Label(new Rect(90, 160, 1100, 80), "THE BEACON HOLDS", titleStyle);
+            GUI.Label(new Rect(90, 160, 1100, 80), "THE VOICES ARE FREE", titleStyle);
             GUI.Label(new Rect(90, 270, 1100, 180),
-                "Together, the two fighters broke the Warden network across all 100 encounters. " +
-                "The final record contains something its makers never predicted: cooperation.", bodyStyle);
+                "Ten guardians stood between you and the truth. Together, you severed the command network and brought its people home. " +
+                "The archive remembers them. It no longer decides their future.", bodyStyle);
             GUI.Label(new Rect(90, 540, 1100, 50), "Campaign complete", bodyStyle);
         }
 
