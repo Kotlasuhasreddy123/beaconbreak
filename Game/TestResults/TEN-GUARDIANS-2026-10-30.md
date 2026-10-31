@@ -40,3 +40,5 @@ phone performance, Safari and subjective pacing remain owner acceptance checks.
 The owner asked to test before submission. Nothing has been submitted. No paid
 hosting plan, billing feature or account service was added. Keep using the
 existing Render Free service; its sleep/restart limits remain applicable.
+
+Public-site recheck October 31: seven keyboard/touch/room control checks passed; Soren victory, all three story shots, host/guest hash agreement and advancement to guardian three passed. A prior three-second touch assertion timeout did not reproduce on retry. Physical phone testing remains outstanding.

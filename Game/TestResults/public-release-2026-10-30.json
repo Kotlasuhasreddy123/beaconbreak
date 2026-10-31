@@ -1,0 +1,23 @@
+{
+  "url": "https://shadow-warriors.onrender.com/",
+  "release": "3.0-ten-guardians",
+  "commit": "58e60c9518fd5d0735a215d31ee271cde1b0c774",
+  "payloadChecks": [
+    {
+      "file": "public.data.gz",
+      "decodedSha256": "fa4fd3320f9bb6db5b2d772e95ca8fa055e17891f3ef46d9d5e86f10ed58b3f5"
+    },
+    {
+      "file": "public.framework.js.gz",
+      "decodedSha256": "cdc22241ad609c8ffec96be308145f24a065ca3d9ee20e502728de83a7faa984"
+    },
+    {
+      "file": "public.loader.js",
+      "decodedSha256": "d72249044a05c112d9f736eb90d890450c4ce849c99c1f5043cc37dfeba4df28"
+    },
+    {
+      "file": "public.wasm.gz",
+      "decodedSha256": "f465c166c15d8360af7dd56688ca73e0f9e6130a72403fafdbafb55418297508"
+    }
+  ]
+}
